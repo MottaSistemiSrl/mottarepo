@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magestore
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the Magestore.com license that is
+ * available through the world-wide-web at this URL:
+ * http://www.magestore.com/license-agreement.html
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category    Magestore
+ * @package     Magestore_PreviewProduct
+ * @copyright   Copyright (c) 2012 Magestore (http://www.magestore.com/)
+ * @license     http://www.magestore.com/license-agreement.html
+ */
+-->
+<config>
+    <modules>
+        <MicroGiant_PreviewProduct>
+            <version>0.1.0</version>
+        </MicroGiant_PreviewProduct>
+    </modules>
+    <frontend>
+        <routers>
+            <previewproduct>
+                <use>standard</use>
+                <args>
+                    <module>MicroGiant_PreviewProduct</module>
+                    <frontName>previewproduct</frontName>
+                </args>
+            </previewproduct>
+        </routers>
+        <layout>
+            <updates>
+                <previewproduct>
+                    <file>previewproduct.xml</file>
+                </previewproduct>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <MicroGiant_PreviewProduct>
+                    <files>
+                        <default>MicroGiant_PreviewProduct.csv</default>
+                    </files>
+                </MicroGiant_PreviewProduct>
+            </modules>
+        </translate>
+    </frontend>
+    <admin>
+        <routers>
+            <previewproductadmin>
+                <use>admin</use>
+                <args>
+                    <module>MicroGiant_PreviewProduct</module>
+                    <frontName>previewproductadmin</frontName>
+                </args>
+            </previewproductadmin>
+        </routers>
+    </admin>
+    <adminhtml>
+        <layout>
+            <updates>
+                <previewproduct>
+                    <file>previewproduct.xml</file>
+                </previewproduct>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <MicroGiant_PreviewProduct>
+                    <files>
+                        <default>MicroGiant_PreviewProduct.csv</default>
+                    </files>
+                </MicroGiant_PreviewProduct>
+            </modules>
+        </translate>
+        <events>
+            <catalog_model_product_duplicate>
+                <observers>
+                    <previewproduct_observer>
+                        <type>singleton</type>
+                        <class>previewproduct/observer</class>
+                        <method>adminhtmlCatalogProductDuplicate</method>
+                    </previewproduct_observer>
+                </observers>
+            </catalog_model_product_duplicate>
+        </events>
+    </adminhtml>   
+    <global>
+        <models>
+            <previewproduct>
+                <class>MicroGiant_PreviewProduct_Model</class>
+                <resourceModel>previewproduct_mysql4</resourceModel>
+            </previewproduct>
+            <previewproduct_mysql4>
+                <class>MicroGiant_PreviewProduct_Model_Mysql4</class>
+                <entities>
+                    <previewproduct>
+                        <table>previewproduct</table>
+                    </previewproduct>
+                </entities>
+            </previewproduct_mysql4>
+            <catalog>
+                <rewrite>
+                    <product_attribute_backend_media>MicroGiant_PreviewProduct_Model_Product_Attribute_Backend_Media</product_attribute_backend_media>
+                </rewrite>
+            </catalog>
+        </models>
+        <resources>
+            <previewproduct_setup>
+                <setup>
+                    <module>MicroGiant_PreviewProduct</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </previewproduct_setup>
+            <previewproduct_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </previewproduct_write>
+            <previewproduct_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </previewproduct_read>
+        </resources>
+        <blocks>
+            <previewproduct>
+                <class>MicroGiant_PreviewProduct_Block</class>
+            </previewproduct>
+            <adminhtml>
+                <rewrite>
+                    <catalog_product_edit>MicroGiant_PreviewProduct_Block_Adminhtml_Catalog_Product_Edit</catalog_product_edit>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        <helpers>
+            <previewproduct>
+                <class>MicroGiant_PreviewProduct_Helper</class>
+            </previewproduct>
+        </helpers>
+        <events>
+            <catalog_controller_product_view>
+                <observers>
+                    <previewproduct_observer>
+                        <type>singleton</type>
+                        <class>previewproduct/observer</class>
+                        <method>catalogProductView</method>
+                    </previewproduct_observer>
+                </observers>
+            </catalog_controller_product_view>
+            <controller_action_predispatch_catalog_product_view>
+                <observers>
+                    <previewproduct_observers>
+                        <class>previewproduct/observer</class>
+                        <method>controllerActionPredispatch</method>
+                    </previewproduct_observers>
+                </observers>
+            </controller_action_predispatch_catalog_product_view>
+        </events>
+    </global>
+</config>

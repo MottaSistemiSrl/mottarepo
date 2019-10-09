@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Amasty_Ordermanager>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Amasty_Orderattach/>
+                <Amasty_Ogrid/>
+                <Amasty_Oaction/>
+                <Amasty_Flags/>
+            </depends>
+        </Amasty_Ordermanager>
+    </modules>
+</config>

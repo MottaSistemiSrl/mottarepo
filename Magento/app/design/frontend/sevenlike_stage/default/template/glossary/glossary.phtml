@@ -1,0 +1,11 @@
+<?php $collection = $this->getGlossary(); ?>
+
+<ul class="glossary_entry">
+    <?php foreach ($collection as $item) :?>
+
+            <li><a href="<?php echo $item->getUrl(); ?>" title="<?php echo $this->__('View glossary entry'); ?>">
+                    <?php echo $item->getTitle(); ?></a>
+            </li>
+
+    <?php endforeach;?>
+</ul>

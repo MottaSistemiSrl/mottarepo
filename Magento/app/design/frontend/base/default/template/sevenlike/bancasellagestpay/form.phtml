@@ -1,0 +1,12 @@
+<fieldset class="form-list">
+    <ul id="payment_form_bancasellagestpay" style="display: none;">
+        <li>
+            <?php $bancasellagestpay=Mage::getSingleton ('bancasellagestpay/standard' );
+              	  $description=$bancasellagestpay->getConfigData ( 'description' );
+        	?>
+        
+            <?php  echo $this->__($description) ?>
+
+        </li>
+    </ul>
+</fieldset>

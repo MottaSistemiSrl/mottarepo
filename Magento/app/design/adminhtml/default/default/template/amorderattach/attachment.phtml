@@ -1,0 +1,40 @@
+<script type="text/javascript">
+attachSaveUrl   = '<?php echo $this->getUrl('orderattach/adminhtml_order/save'); ?>';
+attachReloadUrl = '<?php echo $this->getUrl('orderattach/adminhtml_order/reload'); ?>';
+attachDeleteUrl = '<?php echo $this->getUrl('orderattach/adminhtml_order/delete'); ?>';
+</script>
+<div class="entry-edit" style="margin-bottom: 10px;">
+    <div class="entry-edit-head collapseable">
+        <a onclick="Fieldset.toggleCollapse('order_attachments'); return false;" href="#" id="order_attachments-head" class=""><?php echo $this->__('Order Attachments'); ?></a>
+    </div>
+    <fieldset id="order_attachments" <?php if (Mage::getStoreConfig('amorderattach/general/collapsed')):?>style="display: none;"<?php endif; ?>>
+        <?php $attachmentFields = $this->getAttachmentFields(); ?>
+        <?php if ($attachmentFields->getSize() > 0): ?>
+        <table cellspacing="0" class="form-list">
+            <tbody>
+                <?php  $order = Mage::registry('current_order'); 
+                       foreach ($attachmentFields as $field): 
+                            if (Mage::helper('amorderattach')->isInSetStatus($order->getStatus(),$field->getStatusBackend())):
+                ?>
+                <tr>
+                    <td class="label">
+                        <label><?php echo $this->__($field->getLabel()); ?>
+                            <?php if (Mage::helper('amorderattach')->isAllowedEdit()): ?>
+                                <span style="padding-left: 4px; position: relative; top: 2px;" id="edit_<?php echo $field->getCode(); ?>">
+                                    <a href="#" onclick="attachEdit('<?php echo $field->getCode(); ?>'); return false;"><img src="<?php echo $this->getSkinUrl('images/amorderattach/edit.png') ?>" border="0" alt="Edit" title="Edit" /></a>
+                                </span>
+                            <?php endif; ?>
+                        </label>
+                    </td>
+                    <td class="value" id="field_<?php echo $field->getCode(); ?>">
+                        <?php echo $field->getRenderer()->render(); ?>
+                    </td>
+                </tr>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
+    </fieldset>
+</div>
+<div class="clear"></div>

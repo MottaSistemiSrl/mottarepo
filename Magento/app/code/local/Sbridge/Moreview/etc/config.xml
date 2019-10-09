@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!-- 
+/**
+* @category   Sbridge
+* @package    Sbridge_Moreview
+* @author     ModuleCreator
+* @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config>
+    <modules>
+        <Sbridge_Moreview>
+            <version>0.1.0</version>
+        </Sbridge_Moreview>
+    </modules>
+    <frontend>
+        <routers>
+            <moreview>
+                <use>standard</use>
+                <args>
+                    <module>Sbridge_Moreview</module>
+                    <frontName>moreview</frontName>
+                </args>
+            </moreview>
+        </routers>
+        <layout>
+            <updates>
+                <moreview>
+                    <file>moreview.xml</file>
+                </moreview>
+            </updates>
+        </layout>
+    </frontend>
+    <admin>
+        <routers>
+            <moreview>
+                <use>admin</use>
+                <args>
+                    <module>Sbridge_Moreview</module>
+                    <frontName>moreview</frontName>
+                </args>
+            </moreview>
+        </routers>
+    </admin>  
+    <adminhtml>
+        <acl>
+            <resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+                <admin>
+                    <children>
+                        <Sbridge_Moreview>
+                            <title>Moreview</title>
+                            <sort_order>10</sort_order>
+                        </Sbridge_Moreview>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <layout>
+            <updates>
+                <pricematch>
+                    <file>moreview.xml</file>
+                </pricematch>
+            </updates>
+        </layout>
+    </adminhtml>
+    <global>
+        <!--<models>
+            <moreview>
+                <class>Sbridge_Moreview_Model</class>
+                <resourceModel>moreview_mysql4</resourceModel>
+            </moreview>
+            <moreview_mysql4>
+                <class>Sbridge_Moreview_Model_Mysql4</class>
+                <entities>
+                    <moreview>
+                        <table>moreview</table>
+                    </moreview>
+                </entities>
+            </moreview_mysql4>
+        </models>-->
+        <!--<resources>
+            <moreview_setup>
+                <setup>
+                    <module>Sbridge_Moreview</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </moreview_setup>
+            <moreview_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </moreview_write>
+            <moreview_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </moreview_read>
+        </resources>-->
+        <!--<blocks>
+            <moreview>
+                <class>Sbridge_Moreview_Block</class>
+            </moreview>
+        </blocks>-->
+        <helpers>
+            <moreview>
+                <class>Sbridge_Moreview_Helper</class>
+            </moreview>
+        </helpers>
+    </global>
+</config>

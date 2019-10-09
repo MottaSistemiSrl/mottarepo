@@ -1,0 +1,85 @@
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<div class="alreadyReg">
+	<span class="icn"></span><p>Sei già iscritto a burdastyle.it? <a data-toggle="modal" data-target="#myModal">Clicca qui</a> per effettuare il login.  Altrimenti compila i campi qui sotto.</p>
+</div>
+	<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" id="myModalClose" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel"><?php echo $this->__('Effettua il login con i tuoi dati')?></h4>
+			</div>
+			<div class="modal-body">
+	      		<form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="login-form">
+		      		<?php echo $this->getBlockHtml('formkey'); ?>
+			        <div>
+						<ul class="form-list">
+							<li>
+								<label for="email" class="required"><?php echo $this->__('Email Address') ?>*</label>
+								<div class="input-box">
+									<input type="text" name="login[username]" value="<?php echo $this->escapeHtml($this->getUsername()) ?>" id="email" class="input-text required-entry validate-email" title="<?php echo $this->__('Email Address') ?>" />
+								</div>
+							</li>
+						<li>
+							<label for="pass" class="required"><?php echo $this->__('Password') ?>*</label>
+							<div class="input-box">
+								<input type="password" name="login[password]" class="input-text required-entry validate-password" id="pass" title="<?php echo $this->__('Password') ?>" />
+							</div>
+						</li>
+						
+						</ul>				
+					</div>
+					<input name="context" type="hidden" value="checkout" />
+				</form>
+				
+				<?php echo $this->getChildhtml('forgotPassword');?>
+				
+			</div>
+			<div class="modal-footer">
+				<div id="login-button-set">
+                    <a href="<?php echo $this->getForgotPasswordUrl() ?>" class="restore-account">
+                        <?php echo $this->__('Password dimenticata?') ?>
+                    </a>
+					<button type="button" class="button btn-blue" onclick="onepageLogin(this)">
+                        <span><span><?php echo $this->__('Accedi') ?></span></span>
+                    </button>
+
+				</div>	
+				<div id="forgotpassword-button-set" style="display:none">
+                    <p class="back-link">
+                        <a href="<?php echo $this->helper('customer')->getLoginUrl() ?>">
+                            &laquo; <?php echo $this->__('Back to Login') ?>
+                        </a></p>
+		        	<button type="button" title="<?php echo $this->__('Submit') ?>" class="button btn-blue">
+                        <span><span><?php echo $this->__('Submit') ?></span></span></button>
+    			</div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+	
+	
+<script type="text/javascript">
+    //<![CDATA[
+        var loginForm = new VarienForm('login-form', true);
+        $('email').observe('keypress', bindLoginPost);
+        $('pass').observe('keypress', bindLoginPost);
+        function bindLoginPost(evt){
+            if (evt.keyCode == Event.KEY_RETURN) {
+                loginForm.submit();
+            }
+        }
+        function onepageLogin(button)
+        {
+            if(loginForm.validator && loginForm.validator.validate()){
+                button.disabled = true;
+                loginForm.submit();
+            }
+        }
+    //]]>
+</script>
+<div class="clear move-columns"></div>
+
+

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sevenlike_Bancasellagestpay>
+        <!-- declare module's version information for database updates -->
+            <version>1.0.0</version>
+        </Sevenlike_Bancasellagestpay>
+    </modules>
+    <global>
+    <!-- IMPORTANT: if you use your own namespace (i.e. CompanyName) you also have to declare blocks group
+    for new module. See topic: http://www.magentocommerce.com/boards/viewthread/22416/#t102732 -->
+        <blocks>
+            <bancasellagestpay>
+                <class>Sevenlike_Bancasellagestpay_Block</class>
+            </bancasellagestpay>
+        </blocks>
+        <!-- declare model group for new module -->
+        <models>
+            <!-- model group alias to be used in Mage::getModel('bancasellagestpay/...') -->
+            <bancasellagestpay>
+            <!-- base class name for the model group -->
+                <class>Sevenlike_Bancasellagestpay_Model</class>
+            </bancasellagestpay>
+            <sales>
+                <rewrite>
+                    <service_quote>Sevenlike_Bancasellagestpay_Model_Service_Quote</service_quote>
+                </rewrite>
+            </sales>
+        </models>
+        
+        <!-- declare resource setup for new module -->
+        <resources>
+        <!-- resource identifier -->
+            <bancasellagestpay_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </bancasellagestpay_write>
+            <bancasellagestpay_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </bancasellagestpay_read>
+        </resources>
+        <helpers>
+            <bancasellagestpay>
+                <class>Sevenlike_Bancasellagestpay_Helper</class>
+            </bancasellagestpay>
+        </helpers>
+    </global>
+    <frontend>
+        <blocks>
+            <bancasellagestpay>
+                <class>Sevenlike_BancaSellaGestpPay_Block</class>
+            </bancasellagestpay>
+        </blocks>
+        <routers>
+            <bancasellagestpay>
+                <use>standard</use>
+                <args>
+                    <module>Sevenlike_Bancasellagestpay</module>
+                    <frontName>bancasellagestpay</frontName>
+                </args>
+            </bancasellagestpay>
+        </routers>
+        <translate>
+            <modules>
+                <Sevenlike_Bancasellagestpay>
+                    <files>
+                        <default>Sevenlike_Bancasellagestpay.csv</default>
+                    </files>
+                </Sevenlike_Bancasellagestpay>
+            </modules>
+        </translate>
+    </frontend>
+    <!-- declare default configuration values for this module -->
+    <default>
+        <!-- 'payment' configuration section (tab) -->
+        <payment>
+            <!-- 'bancasellagestpay' configuration group (fieldset) -->
+            <bancasellagestpay>
+                <!-- by default this payment method is inactive -->
+                <active>0</active>
+                <!-- model to handle logic for this payment method -->
+                <model>bancasellagestpay/standard</model>
+                <order_status_paid>1</order_status_paid>
+                <!-- default title for payment checkout page and order view page -->
+                <title>Banca Sella GestPay</title>
+                <submit_url>testecomm.sella.it</submit_url>
+                <merchant_id></merchant_id>
+                <description>Sarai reinderizzato alla pagina di pagamento su Banca Sella</description>
+                <allowspecific>0</allowspecific>
+                <sort_order>1</sort_order>
+            </bancasellagestpay>
+        </payment>
+    </default>
+</config>

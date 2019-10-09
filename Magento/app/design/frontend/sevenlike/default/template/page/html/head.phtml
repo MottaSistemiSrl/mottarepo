@@ -1,0 +1,61 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<script type="text/javascript" src="https://testecomm.sella.it/pagam/javascript/TLSCHK_TE.js"></script>
+  <script type="text/javascript" src="https://ecomm.sella.it/pagam/javascript/TLSCHK_PRO.js"></script>
+  <script type="text/javascript" src="https://www.gestpay.it/gestpay/static/checkbrowser/checkBrowser.js"></script>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="<?php echo $this->getContentType() ?>" />
+<title><?php echo $this->getTitle() ?></title>
+<meta name="description" content="<?php echo htmlspecialchars($this->getDescription()) ?>" />
+<meta name="keywords" content="<?php echo htmlspecialchars($this->getKeywords()) ?>" />
+<meta property="og:site_name" content="<?php echo Mage::getStoreConfig('design/header/logo_alt'); ?>"/>
+<meta property='og:title' content="<?php echo Mage::helper("core")->quoteEscape($this->getTitle()); ?>"/>
+<meta property='og:description' content="<?php echo Mage::helper("core")->quoteEscape($this->getDescription()) ?>">
+<?php if ( Mage::app()->getFrontController()->getRequest()->getControllerName() == 'product'
+           && Mage::app()->getFrontController()->getRequest()->getActionName() == 'view'): ?>
+<meta property="og:url" content="<?php echo $this->helper('core/url')->getCurrentUrl(); ?>"/>
+<?php if($_product = Mage::registry('current_product')) :?>
+<meta property="og:image" content="<?php echo $this->helper('catalog/image')->init($_product, 'image')->resize(524); ?>"/>
+<?php endif; ?>
+<?php else: ?>
+<meta property="og:image" content="<?php echo $this->getSkinUrl("images/logo.gif"); ?>"/>
+<?php endif; ?>
+<meta name="robots" content="<?php echo htmlspecialchars($this->getRobots()) ?>" />
+<link rel="icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo $this->getFaviconFile(); ?>" type="image/x-icon" />
+<!--[if lt IE 7]>
+<script type="text/javascript">
+//<![CDATA[
+    var BLANK_URL = '<?php echo $this->helper('core/js')->getJsUrl('blank.html') ?>';
+    var BLANK_IMG = '<?php echo $this->helper('core/js')->getJsUrl('spacer.gif') ?>';
+//]]>
+</script>
+<![endif]-->
+<?php echo $this->getCssJsHtml() ?>
+<?php echo $this->getChildHtml() ?>
+<?php echo $this->helper('core/js')->getTranslatorScript() ?>
+<?php echo $this->getIncludes() ?>

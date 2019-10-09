@@ -1,0 +1,47 @@
+<?php $id = $this->getRequest()->getParam("forum_id", null); ?>
+<div id="button"  class="forum-buttons">
+
+
+
+        <!--<div class="space-search">
+            <form method="post" action="<?php /*echo Mage::getUrl('megaforum/index/search'); */?>">
+                <input type="text" name="query" value="Cerca" onblur="if(this.value == '') { this.value='Cerca'}" onfocus="if (this.value == 'Cerca') {this.value=''}">
+                <button class="image-button" title="Search" type="submit"><span>Cerca nel Forum</span></button>
+            </form>
+        </div>-->
+    <!--<a href="<?php /*echo Mage::getUrl('megaforum/forum/rss'); */?>">
+        <img src="<?php /*echo $this->getSkinUrl('images/rss-btn.png') */?>" />
+    </a>-->
+
+    <?php if ($id==0) { ?>
+        <?php if (Mage::getSingleton('customer/session')->isLoggedin()) { ?>
+
+            <?php }else{ ?>
+
+            <button type="button" title="Scopri di più" class="button btn-new" onclick="setLocation('<?php echo Mage::getUrl('customer/account/login');?>')">
+                <span><span><?php echo $this->__('Entra nella Community') ?></span></span>
+            </button>
+
+            <?php } ?>
+
+    <?php } else {  ?>
+        <?php $forumx = Mage::getModel('megaforum/forum')->load($id); ?>
+
+            <?php if (Mage::getSingleton('customer/session')->isLoggedin()) { ?>
+                <a class="link-right" href="<?php echo Mage::getUrl('megaforum/index/mywatchlist'); ?>">
+                    <?php echo $this->__('Vai alla wishlist') ?>
+                </a>
+                <button type="button" title="Scopri di più" class="button btn-new add-topic" onclick="setLocation('<?php echo Mage::getUrl('megaforum/index/mytopic', array('forum_id' => $forumx->getForumId()));?>')">
+                    <span><span><?php echo $this->__('Apri una nuova discussione') ?></span></span>
+                </button>
+            <?php }else{ ?>
+
+                <button type="button" title="Scopri di più" class="button btn-new" onclick="setLocation('<?php echo Mage::getUrl('megaforum/index/mytopic', array('forum_id' => $forumx->getForumId()));?>')">
+                    <span><span><?php echo $this->__('Apri una nuova discussione') ?></span></span>
+                </button>
+
+            <?php } ?>
+
+    <?php } ?>
+
+</div>

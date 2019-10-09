@@ -1,0 +1,151 @@
+<?php
+if(Mage::getStoreConfig('ewall_related/general/enabled')):
+    if(count($this->getItems()) > 0): ?>
+        <?php
+
+        $itmes_col = Mage::helper('related')->categorygrouping($this->getItems());
+        $product_id = $this->getRequest()->getParam('product');
+        $product = Mage::getModel('catalog/product')->load($product_id);
+        ?>
+        <ul class="accesories_tabs">
+            <?php $i=1;foreach($itmes_col as $key => $_items): ?>
+                <?php
+                $category = Mage::getModel('catalog/category')->load($key);
+                $category_name = $category->getName();
+                $rootCategoryId = $category->getParentId();
+                //mi carico il path di appartenenza della categoria
+                $path = $category->getPath();
+                //splitto caricandomi tutti gli id delle categorie
+                $ids = explode('/', $path);
+                //controllo se esiste l'id con indice uno (il primo livello sotto root catalog)
+                if (isset($ids[1])){
+                    //mi istanzio l'oggetto categoria
+                    $topParent = Mage::getModel('catalog/category')->setStoreId(Mage::app()->getStore()->getId())->load($ids[1]);
+                }
+                else{
+                    $topParent = null;//it means you are in one catalog root.
+                }
+                if ($topParent){
+                    //se la categoria è definita mi calcolo l'id
+                    $parentId = $topParent->getId();
+                }
+                //se il prodotto è sotto la categoria riviste lo visualizzo altrimenti no
+                if($parentId == 25){
+                    ?>
+                    <li>
+                        <div>
+                            <h1><?php echo $category_name; ?></h1>
+                        </div>
+                    </li>
+
+
+                    <ul class="accessories border-radius-3 products-grid">
+
+                        <?php $count = count($_items);  ?>
+                        <?php $rowCount = 0;  ?>
+                        <?php foreach($_items as $key1 => $_item): ?>
+                            <?php $_item = Mage::helper('related')->getDatas($_item);?>
+
+                            <li class="item<?php echo $rowCount % 4 == 3 ? ' last' : null; ?>">
+                                <div class="product">
+                                    <a href="<?php echo $_item->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_item->getName()) ?>" class="product-image">
+
+                                        <?php
+                                        $sb=0;
+                                        $imagesCount = Mage::getModel('catalog/product')->load($_item->getId())->getMediaGalleryImages();
+                                        if(count($imagesCount) >1 ):
+                                            $_images = $imagesCount->getItemByColumnValue('label', 'back');
+                                            if($_images)
+                                            {
+                                                $sb=1;
+                                                ?>
+                                                <img class="sbmoreview" src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail', $_images->getFile())->resize(203,270); ?>" width="203" alt="<?php echo $this->htmlEscape($_images->getLabel());?>" title="<?php $this->htmlEscape($_images->getLabel());?>"/>
+                                            <?php }
+                                        endif;?>
+
+                                        <img class="<?php if($sb==1)echo "sbview";?>" src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(203,273) ?>" width="203" alt="<?php echo $this->htmlEscape($_item->getName()) ?>" /></a>
+                                    <div class="datiProd">
+                                        <h2 class="product-name">
+                                            <a href="<?php echo $_item->getProductUrl() ?>"><?php echo $this->htmlEscape($_item->getName()) ?></a>
+                                        </h2>
+                                        <p class="sku"><?php echo $_item->getSku(); ?></p>
+                                        <div class="doubleData">
+                                            <span class="tg">Tg. <?php echo $_item->getAttributeText("size"); ?></span>
+                                            <span class="lvl">Livello: <?php echo $_item->getAttributeText("livello"); ?></span>
+                                        </div>
+
+
+                                        <?php if($_item->getPagamento() == 28): ?>
+                                            <span class="new free"><?php echo $_item->getAttributeText("pagamento"); ?></span>
+                                        <?php endif; ?>
+
+                                        <?php if($_item->getProdottoNuovo()): ?>
+                                            <span class="new">NUOVO</span>
+                                        <?php endif; ?>
+
+                                        <?php if($_item->getSpecialPrice()): ?>
+                                            <span class="new promo">PROMO</span>
+                                        <?php endif; ?>
+
+                                        <?php if($_item->getPrezzoVisibile() == 1): ?>
+                                            <?php echo $this->getPriceHtml($_item, true, '-related') ?>
+                                        <?php endif; ?>
+
+                                        <div class="actions">
+                                            <ul class="add-to-links">
+                                                <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                                                    <li><a href="<?= $this->getAddToWishlistUrl($_item) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?>
+                                                        </a></li>
+                                                <?php endif; ?>
+                                            </ul>
+                                            <?php if($_item->isSaleable()): ?>
+                                                <?php if($_item->getTypeId() != "downloadable"): ?>
+                                                    <button type="button" title="<?= $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?= $this->getAddToCartUrl($_item) ?>')">
+                                                        <span><span><?php echo $this->__('Add to Cart') ?></span></span>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <button type="button" title="<?= $this->__('Download') ?>" class="button btn-down" onclick="setLocation('<?= Mage::helper("checkout/cart")->getAddUrl($_item); ?>');">
+                                                        <span><span><?php echo $this->__('Download') ?></span></span>
+                                                    </button>
+
+                                                <?php endif; ?>
+                                            <?php else: ?>
+                                                <!-- prodotto esaurito -->
+                                                <button type="button" title="<?php echo $this->__('Scopri') ?>" class="button btn-scopri-down" onclick="setLocation('<?php echo $_item->getProductUrl() ?>')">
+                                                    <span><span><?php echo $this->__('Scopri') ?></span></span>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <?php if($_item->getTypeId() == "configurable"): ?>
+                                        <div class="addConf">
+                                            <form action="<?php echo $this->helper('checkout/cart')->getAddUrl($_item); ?>" method="post" id="add-cart-form-<?php echo $_item->getId(); ?>">
+                                                <input type="hidden" name="related_product" value="" />
+                                                <input type="hidden" name="qty" value="1" />
+                                                <input type="hidden" name="cpid" value="" />
+                                                <input type="hidden" name="super_attribute[149]" value="" />
+                                            </form>
+                                            <?php
+                                            $conf = new Mage_Catalog_Block_Product_View_Type_Configurable();
+                                            $list = $conf->setData("product", $_item)->getAllowProducts();
+                                            foreach($list as $p): ?>
+                                                <button class="button select-product t-<?= $p->getTipologia(); ?>" data-sid="<?= $p->getId(); ?>" data-tipologia="<?= $p->getTipologia(); ?>" data-cid="<?= $_product->getId(); ?>">
+                                                    <span><?= $p->getAttributeText('tipologia')." ". $this->helper("core")->formatPrice($p->getFinalPrice()); ?></span>
+                                                </button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </li>
+                            <?php $rowCount++; ?>
+                        <?php endforeach; ?>
+                    </ul>
+
+                <?php
+                }
+                $i++;endforeach ?>
+        </ul>
+    <?php endif; ?>
+<?php endif; ?>
+
+

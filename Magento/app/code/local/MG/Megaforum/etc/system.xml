@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<config>
+	  <tabs>
+		<megaforum_tab translate="label" module="megaforum">
+                <label>MEGAFORUM EXTENSIONS</label>
+                <sort_order>0</sort_order>
+                </megaforum_tab>
+	  </tabs>
+	  
+	  <sections>
+		   <megaforum_section  translate="label" module="megaforum">                    
+		   <label>Mega Forum</label>
+		   <tab>megaforum_tab</tab>
+		   <frontend_type>text</frontend_type>
+		   <sort_order>0</sort_order>
+		   <show_in_default>1</show_in_default>
+		   <show_in_website>1</show_in_website>
+		   <show_in_store>1</show_in_store>   
+		            
+	<groups>
+	       <megaforum_group1 translate="label"> 
+		  <label>Admin Email Notifications</label>
+		  <frontend_type>text</frontend_type>
+		  <sort_order>0</sort_order>
+		  <show_in_default>1</show_in_default>
+		  <show_in_website>1</show_in_website>
+		  <show_in_store>1</show_in_store>
+	      <fields>
+                                 
+                  <admincreateemail translate="label">
+                    <label>Admin Create Email Notification</label>
+                    <frontend_type>text</frontend_type>                     
+                    <sort_order>0</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>			   
+                  </admincreateemail>
+						  
+	      </fields>
+	      </megaforum_group1>
+	      		   
+		</groups>
+		</megaforum_section>
+	  </sections>
+</config>

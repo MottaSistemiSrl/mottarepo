@@ -1,0 +1,25 @@
+<div>
+	<table border=1 width="70%">
+		<tr>
+			<td><b>videoid</b></td>			
+			<td><b>prodottoid</b></td>
+			<td><b>withslide</b></td>
+			<td><b>path</b></td>
+			<td><b>size</b></td>
+			<td><b>creation</b></td>
+			<td>&nbsp;</td>
+		</tr>
+		
+		<?php foreach ($this->entries as $entry): ?>
+			<tr>
+			    <td><a href="/video/update/productId/<?=$entry->product_id; ?>"><?php echo $this->escape($entry->video_id) ?></a></td>
+			    <td><?php echo $this->escape($entry->product_id) ?></td>
+			    <td><?php echo $this->escape($entry->video_with_slides) ?></td>
+			    <td><?php echo $this->escape($entry->video_path) ?></td>
+			    <td><?php echo $this->escape($entry->video_size) ?></td>
+			    <td><?php echo $this->escape($entry->video_creation_date) ?></td>
+			    <td><a href="/video/delete/videoId/<?=$entry->video_id; ?>/productId/<?=$entry->product_id; ?>">canc</a></td>
+		    </tr>
+	    <?php endforeach ?>
+	</table>
+</div>

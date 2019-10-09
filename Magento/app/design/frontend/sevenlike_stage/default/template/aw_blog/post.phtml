@@ -1,0 +1,274 @@
+<?php $post = $this->getPost(); ?>
+
+<?php
+    $postContent = $post->getPostContent();
+    if (Mage::getStoreConfig('glossary/replacings/cms_replace') == 1) {
+        $originalContent = $postContent;
+        //get available glossary entries
+        $titles = Mage::getModel('glossary/glossary')->getTitles();
+        function kkg_callback ($hit) {
+            $result = '<a href="#" onclick="popWin(\' ' . Mage::getUrl('glossary/entry') . urlencode(html_entity_decode($hit[0], ENT_COMPAT, 'UTF-8')) . '/popup\',\'ge\',\'width=300,height=300,resizable=yes,scrollbars=yes\')">' . $hit[0] . '</a>';
+            return $result;
+        }
+        //match entries with description and add link
+        if (Mage::getStoreConfig('glossary/replacings/open_popup') == 1) {
+            $postContent = preg_replace_callback($titles, 'kkg_callback', $originalContent);
+        } else {
+            $postContent = preg_replace_callback($titles, create_function('$hit', 'return "<a href=\"' . Mage::getUrl() . 'glossary/entry/".urlencode(html_entity_decode($hit[0],ENT_COMPAT,"UTF-8")) . "\">" . $hit[0] . "</a>";'), $originalContent);
+        }
+    }
+    $current_url = $this->helper('core/url')->getCurrentUrl();
+    $current_session = Mage::getSingleton('customer/session');
+    if(isset($current_session)) $current_session->setData("before_auth_url", $current_url);
+?>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="postWrapper">
+    <div class="prePost">
+        <?php echo $this->formatDate($post->getCreatedTime(), Mage::getStoreConfig('blog/blog/dateformat'), false); ?>
+        <br><?php echo $this->__("By"); ?> <span class="openBold"><?php echo $post->getUser(); ?></span>
+    </div>
+
+    <div class="postTitle">
+        <h2><?php echo $post->getTitle(); ?></h2>
+    </div>
+
+    <div class="postContent">
+        <?php echo $postContent; ?>
+
+    </div>
+    <div class="social">
+        <p><span>Ti piace?</span> Condividilo!</p>
+        <ul>
+            <li><a class="fb" onclick="window.open('http://www.facebook.com/sharer.php?u=<?php echo $post->getAddress(); ?>', 'titolo', ' width=600, height=300, hidthresizable=yes, status=0, scrollbars=yes, location');"></a></li>
+            <li><a class="tw" onclick="window.open('https://twitter.com/share?url=<?php echo $post->getAddress(); ?>', 'titolo', ' width=600, height=300, hidthresizable=yes, status=0, scrollbars=yes, location');"></a></li>
+            <li><a class="gp" onclick="window.open('https://plus.google.com/share?url=<?php echo $post->getAddress(); ?>', 'titolo', ' width=600, height=300, hidthresizable=yes, status=0, scrollbars=yes, location');"></a></li>
+            <li><a class="pt" onclick="window.open('http://pinterest.com/pin/create/button/?url=<?php echo $post->getAddress(); ?>&description=&media=', 'titolo', ' width=600, height=300, hidthresizable=yes, status=0, scrollbars=yes, location');"></a></li>
+        </ul>
+
+    </div>
+<!--     <div class="tags"><?php echo Mage::getBlockSingleton('blog/blog')->getTagsHtml($post) ?></div> -->
+</div>
+
+<?php $relatedProducts = Mage::getModel("blog/related")->loadByPostId($post->getPostId()); ?>
+<?php if($relatedProducts) { ?>
+
+    <div class="block block-related">
+
+        <h3>Prodotti correlati</h3>
+
+        <ul class="items products-grid">
+
+            <?php
+                $count = 1;
+                foreach($relatedProducts as $_item):
+
+                    $attributeSetModel = Mage::getModel("eav/entity_attribute_set");
+                    $attributeSetModel->load($_item->getAttributeSetId());
+
+            ?>
+
+                <li class="item <?php if($count==3): ?>last<?php endif; ?>">
+
+                    <a href="<?php echo $_item->getProductUrl() ?>" title="<?php echo $this->htmlEscape($_item->getName()) ?>" class="product-image">
+                        <?php
+                        $sb=0;
+                        $imagesCount = Mage::getModel('catalog/product')->load($_item->getId())->getMediaGalleryImages();
+                        if(count($imagesCount) >1 ):
+                            $_images = $imagesCount->getItemByColumnValue('label', 'back');
+                            if($_images)
+                            {
+                                $sb=1;
+                                ?>
+                                <img class="sbmoreview" src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail', $_images->getFile())->resize(203,270); ?>" alt="<?php echo $this->htmlEscape($_images->getLabel());?>" title="<?php $this->htmlEscape($_images->getLabel());?>"/>
+                            <?php }
+                        endif;?>
+                        <img class="<?php if($sb==1)echo "sbview";?>" src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(203,270); ?>" width="203" alt="<?php echo $this->stripTags($this->getImageLabel($_item, 'thumbnail'), null, true) ?>" />
+                    </a>
+                    <div class="datiProd">
+                        <h2 class="product-name">
+                            <a href="<?php echo $_item->getProductUrl() ?>"><?php echo $this->htmlEscape($_item->getName()) ?></a>
+                        </h2>
+                        <?php if($_item->getTypeId() != "bundle"): ?>
+                            <p class="sku"><?php echo $_item->getSku(); ?></p>
+
+                            <div class="doubleData">
+                                <span class="tg">Tg.: <?php echo $_item->getAttributeText("size"); ?></span>
+                                <span class="lvl">Livello: <?php echo $_item->getAttributeText("livello"); ?></span>
+                            </div>
+                            <?php if($_item->getProdottoNuovo()): ?>
+                                <span class="new">NUOVO</span>
+                            <?php endif; ?>
+                            <?php if($_item->getSpecialPrice()): ?>
+                                <span class="new promo">PROMO</span>
+                            <?php endif; ?>
+                             <?php if($_item->getPagamento() == 28): ?>
+                                <span class="new free"><?php echo $_item->getAttributeText("pagamento"); ?></span>
+                            <?php endif; ?> 
+                        <?php else: ?>
+                            <p class="sku"><?php echo $_item->getShortDescription(); ?></p>
+                            <div class="doubleData">
+                                <span class="lvl">Livello: <?php echo $_item->getAttributeText("livello"); ?></span>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php Mage::unregister('product'); Mage::register('product', $_item); $blk = $this->getLayout()->createBlock('catalog/product_view'); echo $blk->getPriceHtml($_item, true, '-related') ?>
+
+                        <div class="actions">
+                            <ul class="add-to-links">
+                                <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                                    <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_item) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                                <?php endif; ?>
+                            </ul>
+                            <?php if($_item->isSaleable()): ?>
+                                <?php if($_item->getTypeId() != "downloadable"): ?>
+                                    <button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_item) ?>')">
+                                        <span><span><?php echo $this->__('Add to Cart') ?></span></span>
+                                    </button>
+                                <?php else: ?>
+                                    <button type="button" title="<?php echo $this->__('Download') ?>" class="button btn-down" onclick="setLocation('<?php echo $_item->getProductUrl() ?>')">
+                                        <span><span><?php echo $this->__('Download') ?></span></span>
+                                    </button>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <!-- prodotto esaurito -->
+                                <button type="button" title="<?php echo $this->__('Scopri') ?>" class="button btn-scopri-down" onclick="setLocation('<?php echo $_item->getProductUrl() ?>')">
+                                    <span><span><?php echo $this->__('Scopri') ?></span></span>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </li>
+                <?php $count++; ?>
+                <?php if($count == 4) break; ?>
+            <?php endforeach ?>
+
+        </ul>
+
+    </div>
+<?php } ?>
+
+<!-- Comment Section -->
+
+<?php if ($this->getCommentsEnabled()): ?>
+    <?php if ($post->getComments()): ?>
+        <!--<div class="postError"><?php //echo Mage::helper('blog')->__('Comments are Closed for this post') ?></div>-->
+    <?php else: ?>
+        <div class="postTitle com"><a name="commentBox" ></a>
+            <h2>Commenti</h2>
+        </div>
+
+        <?php $comments = $this->getComment(); ?>
+
+
+        <?php $websiteId      = Mage::app()->getStore()->getWebsiteId(); ?>
+        <?php foreach ($comments as $comment) : ?>
+            <div class="commentWrapper">
+                <div class="commentDetails">
+                    <div class="img">
+                        <?php $user = Mage::getModel('customer/customer')->setWebsiteId($websiteId)->loadByEmail($comment->getEmail()); ?>
+                        <?php if($user->getSevenlikeImage()) $img = $this->getUrl('media/customer') . substr($user->getSevenlikeImage(), 1); else $img = $this->getSkinUrl('images/blog/avatar.png'); ?>
+                        <img src="<?= $img ?>" width="50" height="50">
+                    </div>
+                    <div class="det">
+                        <h4 class="username"><?php echo $user->getSevenlikeNickname(); ?></h4>
+                        <?php echo $this->formatDate($comment->getCreatedTime(), Mage::getStoreConfig('blog/blog/dateformat'), false); ?>
+                    </div>
+                </div>
+                <div class="commentContent"><?php echo nl2br($comment->getComment()); ?></div>
+            </div>
+        <?php endforeach; ?>
+
+
+
+        <?php if ($this->getLoginRequired()): ?>
+
+            <?php if ($this->helper('customer')->isLoggedIn()): ?>
+                <form action="" id="postComment" method="post">
+                    <fieldset class="group-select">
+                        <h3>Aggiungi un commento</h3>
+                        <ul class="form-list">
+                            <li>
+
+                                <div class="input-box aw-blog-comment-area">
+                                    <textarea name="comment" id="comment" title="<?php echo $this->__('Comment') ?>" class="required-entry input-text" style="height:150px;width:99%;" cols="50" rows="5"><?php echo $this->getCommentText(); ?></textarea>
+                                </div>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <div class="button-set" >
+                        <input name="post_id" type="hidden" value="<?php echo $post->getPostId(); ?>" />
+                        <input name="email" type="hidden" value="<?php echo $this->htmlEscape($this->helper('blog')->getUserEmail()) ?>"/>
+                        <input name="user" type="hidden" value="<?php echo $this->htmlEscape($this->helper('blog')->getUserName()) ?>"/>
+                        <button class="form-button button btn-reply" type="submit"><span><span><?php echo Mage::helper('blog')->__('Commenta') ?></span></span></button>
+                    </div>
+                </form>
+
+                <script type="text/javascript">
+                    var contactForm = new VarienForm('postComment', false);
+                </script>
+
+            <?php else: ?>
+            <div class="commentWrapper">
+                <div class="right">
+                    <p class="comm-accedi">Vuoi commentare questo post?</p>
+
+                    <button class="button btn-login" onclick="location.href='<?php echo Mage::helper('customer')->getLoginUrl(); ?>'">
+                        <span><span>Accedi</span></span>
+                    </button>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <?php else: ?>
+
+            <form action="" id="postComment" method="post">
+                <fieldset class="group-select">
+                    <h3>Aggiungi un commento</h3>
+                    <ul class="form-list">
+                        <li>
+                            <div class="input-box">
+                                <label for="name" class="required"><?php echo Mage::helper('blog')->__('Name') ?><em>*</em></label><br />
+                                <input name="user" id="user" value="<?php echo $this->getCommentName(); ?>" title="<?php echo $this->__('Name') ?>" class="required-entry input-text" type="text" />
+                            </div>
+
+                            <div class="input-box">
+                                <label for="email" class="required"><?php echo Mage::helper('blog')->__('Email') ?><em>*</em></label><br />
+                                <input name="email" id="email" value="<?php echo $this->getCommentEmail(); ?>" title="<?php echo $this->__('Email') ?>" class="required-entry input-text validate-email" type="text" />
+                            </div>
+                            <div class="clear"></div>
+                            <div class="input-box aw-blog-comment-area">
+                                <textarea name="comment" id="comment" title="<?php echo Mage::helper('blog')->__('Comment') ?>" class="required-entry input-text" style="height:150px;width:95%;" cols="50" rows="5"><?php echo $this->getCommentText(); ?></textarea>
+                            </div>
+                        </li>
+
+                        <?php
+                        if (Mage::getStoreConfig('blog/recaptcha/enabled') && !$this->helper('customer')->isLoggedIn()) { ?><li>
+                        <?php
+                            require_once 'recaptcha/recaptchalib-aw.php';
+                            // Get a key from http://recaptcha.net/api/getkey
+                            $publickey = Mage::getStoreConfig('blog/recaptcha/publickey');
+                            $privatekey = Mage::getStoreConfig('blog/recaptcha/privatekey');
+                            $error = null;
+                            echo recaptcha_get_html($publickey, $error);
+                            ?></li><?php
+            }
+                        ?>
+                    </ul>
+                </fieldset>
+                <div class="button-set" style="width:96%">
+                    <input name="post_id" type="hidden" value="<?php echo $post->getPostId(); ?>" />
+                    <button class="button form-button" type="submit"><span><span><?php echo Mage::helper('blog')->__('Submit Comment') ?></span></span></button>
+                </div>
+            </form>
+
+            <script type="text/javascript">
+                var contactForm = new VarienForm('postComment', false);
+                $(document).ready(function(){
+                    $("#submitcomment").click(function(){
+                        <?php ?>
+                    });
+                });
+            </script>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>

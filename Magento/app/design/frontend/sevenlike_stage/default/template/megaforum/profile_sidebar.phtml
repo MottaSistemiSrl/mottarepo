@@ -1,0 +1,50 @@
+<?php $id = $this->getRequest()->getParam('id'); ?>
+
+<?php
+$cp = Mage::getModel("product/product")
+    ->getCollection()
+    ->addFieldToFilter("id_product", $id)
+    ->getFirstItem();
+$customer = Mage::getModel("customer/customer")->load($cp->getIdCustomer());
+
+
+?>
+<div class="block profile-user">
+
+        <div class="profile-name">
+            <?php echo $customer->getSevenlikeNickname(); ?>
+        </div>
+        <div class="profile-image">
+            <?php if($customer->getSevenlikeImage()) $img = $this->getUrl('media/customer') . substr($customer->getSevenlikeImage(), 1); else $img = $this->getSkinUrl('images/blog/avatar.png'); ?>
+            <img src="<?= $img ?>" width="50" height="50">
+        </div>
+
+        <div class="profile-description">
+            <?php echo $customer->getSevenlikeDescription() ?>
+        </div>
+
+        <div class="profile-button">
+            <button type="button" title="Scopri di pi&ugrave;" class="button btn-profile" onclick="setLocation('<?php echo Mage::getUrl('megaforum/index/profile')."id/".$customer->getId() ?>')">
+                <span><span>Guarda il profilo</span></span>
+            </button>
+        </div>
+        <!--<div class="profile-city">
+            <?php /*echo $customer->getSevenlikeCity(); */?>
+            <?php /*echo $customer->getSevenlikeNation(); */?>
+        </div>-->
+
+        <!--<div class="profile-active-from">
+            <?php /*echo strftime('%e %B %Y' ,strtotime($customer->getCreatedAt())) */?>
+        </div>-->
+
+
+
+    <!--<div class="profile-level">
+        <?php /*echo $customer->getResource()
+                ->getAttribute('sevenlike_level')
+                ->getFrontend()
+                ->getValue($customer)
+        */?>
+    </div>-->
+
+    </div>

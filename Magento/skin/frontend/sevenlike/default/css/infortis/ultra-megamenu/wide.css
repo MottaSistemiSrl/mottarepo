@@ -1,0 +1,46 @@
+/**
+ * Wide drop-down menu
+ */
+
+/* 2nd level only
+-------------------------------------------------------------- */
+/* 2nd-level links block: with subcategory title and a list of child categories */
+.page #nav ul.level0 > li {
+	display:inline-block;
+	float:none;
+	vertical-align:top;
+	padding-top:0;
+	padding-bottom:15px;
+    padding-left: 0;
+}
+.page #nav ul.level0 > li > a {
+	margin-bottom:10px;
+	font-size:16px;
+	line-height:18px;
+}
+
+/* 2nd level+
+-------------------------------------------------------------- */
+.page #nav ul li { /*float:none;*/ margin-bottom:1px; }
+.page #nav ul li a { float:none; }
+
+/* 3rd level only
+-------------------------------------------------------------- */
+.page #nav ul.level1 { position:static; }
+.page #nav ul.level1 > li:hover { background-position:6px 6px; }
+
+/* 4th level
+-------------------------------------------------------------- */
+.page #nav ul.level2 { margin:7px 0; padding:0; position:static; }
+.page #nav ul.level2 a { font-size:0.9166em; line-height:1.2727em; /*11px 14px*/ opacity:0.6; }
+.page #nav li.level2:hover ul.level2 a {
+	opacity:1;
+	transition:			opacity 150ms ease-out;
+	-moz-transition:	opacity 150ms ease-out;
+	-webkit-transition:	opacity 150ms ease-out;
+	-o-transition:		opacity 150ms ease-out;
+}
+
+/* 4rd level+
+-------------------------------------------------------------- */
+.page #nav ul ul ul li { background:none; padding-left:0; }

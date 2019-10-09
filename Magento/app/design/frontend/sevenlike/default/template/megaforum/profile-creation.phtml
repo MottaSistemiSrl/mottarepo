@@ -1,0 +1,85 @@
+<?php // @see MG_Megaforum_Block_Profilecreation ?>
+
+    <h2><?php echo $this->__('Creazioni'); ?></h2>
+    <ul class="products-grid">
+
+        <?php $userCreationCollection = $this->getUserCreationCollection();?>
+        <?php echo $this->getPagerHtml(); ?>
+            <!--<button id="load-more-products">Load more products..</button>-->
+
+        <?php if (count($userCreationCollection)){ ?>
+
+            <?php $rowCount = 0; ?>
+            <?php foreach ($userCreationCollection as $userProduct) : ?>
+                <li class="item<?php echo $rowCount % 3 == 2 ? ' last' : null; ?>">
+
+                    <a href="<?php echo $userProduct->getProductUrl() ?>" class="product-image">
+                        <img alt="<?php echo $userProduct->getName() ?>" src="<?php echo $this->helper('catalog/image')->init($userProduct, 'image')->resize(203,270); ?>" width="203">
+                    </a>
+
+
+                    <div class="datiProd">
+
+                        <h2 class="product-name">
+                            <a href="<?php echo $userProduct->getProductUrl() ?>"
+                               title="<?php echo $this->stripTags($userProduct->getName(), null, true) ?>">
+                                <?php echo $userProduct->getName() ?>
+                            </a>
+                        </h2>
+
+                        <div class="desc"><?php echo substr($userProduct->getDescription(), 0, 50); ?>...</div>
+
+                        <button type="button" title="Scopri di pi&ugrave;" class="button btn-scopri"
+                                onclick="setLocation('<?php echo $userProduct->getProductUrl() ?>')">
+                            <span><span><?php echo $this->__('Scopri'); ?></span></span>
+                        </button>
+                    </div>
+                    <!--
+                    <div class="creation-info">
+                        <?php /*echo $this->__('Carta Modello') */ ?>:
+                        <?php /*echo $userProduct->getSkuCartamodello() */ ?>
+                        <?php /*echo $this->__('Livello') */ ?>:
+                    </div>-->
+
+                </li>
+                <?php $rowCount++; ?>
+            <?php endforeach; ?>
+        <?php } else { ?>
+            <li><p style="margin: 0px 0 40px 0;">L'utente non ha pubblicato nessuna creazione</p></li>
+        <?php } ?>
+    </ul>
+<!--
+<script type="application/javascript">
+
+    function sendLoadMoreProductsRequest(url) {
+        new Ajax.Request(url, {
+            onSuccess: function(response) {
+                //Create dummy element
+                var div = document.createElement('div');
+                div.innerHTML = response.responseText;
+                //refresh the page class element
+                $$('.pages')[0].innerHTML = $(div).select('.pages')[0].innerHTML;
+                //assign the list to the existing product list
+                $$('.products-grid')[0].innerHTML = $(div).select('.products-grid')[0].innerHTML;
+                //check if there are more products to be loaded or not
+                if(!$(div).select('.next.i-next')[0]){
+                    $('load-more-products').style.display = "none";
+                }
+            }
+        });
+    }
+
+    function callbackFunc(e) {
+        if($$('.next.i-next')[0]){
+            var nextPageUrl = $$('.next.i-next')[0].readAttribute('href');
+            sendLoadMoreProductsRequest(nextPageUrl);
+        }
+        else{
+            //hide button
+            $$(e.currentTarget).hide();
+        }
+    }
+
+    //Assigning click event to the button which triggers the "next" link
+    $('load-more-products').observe('click', callbackFunc);
+</script>-->

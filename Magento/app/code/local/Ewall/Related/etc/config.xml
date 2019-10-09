@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Ewall_Related>
+      <version>0.1.0</version>
+    </Ewall_Related>
+  </modules>
+  <frontend>
+    <routers>
+      <related>
+        <use>standard</use>
+          <args>
+            <module>Ewall_Related</module>
+            <frontName>related</frontName>
+          </args>
+      </related>
+    </routers>
+		<layout>
+		  <updates>
+			<related>
+			  <file>related.xml</file>
+			</related>
+		  </updates>
+		</layout>
+  </frontend>
+  <global>
+	<rewrite>        
+		<ewall_related_checkout_cartcontroller>
+			<from><![CDATA[#^/checkout/cart/#]]></from> <!-- Mage_Checkout_CartController  -->
+			<to>/related/checkout_cart/</to> <!-- Ewall_Related_Checkout_CartController  -->
+		</ewall_related_checkout_cartcontroller>
+	</rewrite>
+    <helpers>
+      <related>
+        <class>Ewall_Related_Helper</class>
+      </related>
+    </helpers>
+	<blocks>
+		<related>
+			<class>Ewall_Related_Block</class>
+		</related>
+		<catalog>
+			<rewrite>
+				<product_list_related>Ewall_Related_Block_Catalog_Product_List_Related</product_list_related>
+			</rewrite>
+		</catalog>
+	</blocks>
+  </global>
+</config> 

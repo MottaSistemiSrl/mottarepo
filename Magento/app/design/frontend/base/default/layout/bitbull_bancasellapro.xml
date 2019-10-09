@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<layout>
+
+    <bitbull_bancasellapro_gestpay_redirect>
+        <label>Redirect...</label>
+
+        <block type="bitbull_bancasellapro/newroot" name="root" output="toHtml" template="bitbull/bancasellapro/page/redirect.phtml">
+
+            <block type="core/text_list" name="content" as="content" translate="label">
+                <label>Main Content Area</label>
+                <block type="bitbull_bancasellapro/redirect" name="bancasella_gestpay_redirect" template="bitbull/bancasellapro/gestpay/redirect.phtml"></block>
+            </block>
+
+        </block>
+
+    </bitbull_bancasellapro_gestpay_redirect>
+
+    <bitbull_bancasellapro_gestpay_success translate="label">
+        <label>Checkout Success</label>
+        <reference name="root">
+            <action method="setTemplate"><template>page/2columns-right.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="checkout/onepage_success" name="checkout.success" template="checkout/success.phtml"/>
+        </reference>
+    </bitbull_bancasellapro_gestpay_success>
+
+
+
+    <bitbull_bancasellapro_gestpay_confirm3d>
+        <block type="bitbull_bancasellapro/newroot" name="root" output="toHtml" template="bitbull/bancasellapro/page/redirect.phtml">
+            <block type="core/text_list" name="content" as="content" translate="label">
+                <block type="bitbull_bancasellapro/confirm3d"  name="bancasellagestpay_confirm"
+                       template="bitbull/bancasellapro/gestpay/confirm3d.phtml" />
+            </block>
+        </block>
+
+    </bitbull_bancasellapro_gestpay_confirm3d>
+
+    <checkout_onepage_index>
+        <reference name="head">
+
+            <block type="bitbull_bancasellapro/utility_text" name="gestpay.iframe.external"/>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addCss"><name>lib/prototype/windows/themes/magento.css</name></action>
+        </reference>
+        <reference name="checkout.onepage">
+            <action method="setTemplate">
+                <template>bitbull/bancasellapro/checkout/onepage.phtml</template>
+            </action>
+        </reference>
+    </checkout_onepage_index>
+
+    <!--WARNING: if you use a magento version 1.6 you must to use this comment handle instead of precedent handle-->
+    <!--<checkout_onepage_index>-->
+        <!--<reference name="head">-->
+
+            <!--<block type="bitbull_bancasellapro/utility_text" name="gestpay.iframe.external"/>-->
+            <!--<action method="addJs"><script>prototype/window.js</script></action>-->
+            <!--<action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>-->
+            <!--<action method="addItem"><type>js_css</type><name>prototype/windows/themes/magento.css</name></action>-->
+
+        <!--</reference>-->
+        <!--<reference name="checkout.onepage">-->
+            <!--<action method="setTemplate">-->
+                <!--<template>bitbull/bancasellapro/checkout/onepage1-6.phtml</template>-->
+            <!--</action>-->
+        <!--</reference>-->
+    <!--</checkout_onepage_index>-->
+
+    <opc_index_index>
+        <reference name="head">
+            <block type="bitbull_bancasellapro/utility_text" name="gestpay.iframe.external"/>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addCss"><name>lib/prototype/windows/themes/magento.css</name></action>
+            <action method="addItem"><type>skin_js</type><name>js/bitbull_bancasella/gestpayform_onepagecheckout.js</name></action>
+        </reference>
+    </opc_index_index>
+
+    <!--WARNING: if you use a magento version 1.6 you must to use this comment handle instead of precedent handle-->
+    <!--<opc_index_index>-->
+        <!--<reference name="head">-->
+            <!--<block type="bitbull_bancasellapro/utility_text" name="gestpay.iframe.external"/>-->
+            <!--<action method="addJs"><script>prototype/window.js</script></action>-->
+            <!--<action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>-->
+            <!--<action method="addItem"><type>js_css</type><name>prototype/windows/themes/magento.css</name></action>-->
+            <!--<action method="addItem"><type>skin_js</type><name>js/bitbull_bancasella/gestpayform_onepagecheckout.js</name></action>-->
+        <!--</reference>-->
+    <!--</opc_index_index>-->
+
+
+
+
+    <bitbull_bancasellapro_tokenization_newtoken translate="label">
+        <label>Generate a new token</label>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="head">
+            <block type="bitbull_bancasellapro/utility_text" name="gestpay.iframe.external"/>
+            <action method="addJs"><script>bancasellapro/newtoken.js</script></action>
+            <action method="addJs"><script>prototype/window.js</script></action>
+            <action method="addItem"><type>js_css</type><name>prototype/windows/themes/default.css</name></action>
+            <action method="addCss"><name>lib/prototype/windows/themes/magento.css</name></action>
+        </reference>
+
+        <reference name="content">
+            <block type="bitbull_bancasellapro/tokenization_newtoken" name="checkout.success" template="bitbull/bancasellapro/gestpay/newtoken.phtml"/>
+        </reference>
+
+    </bitbull_bancasellapro_tokenization_newtoken>
+
+</layout>

@@ -1,0 +1,14 @@
+<?php
+/**
+ * @category	design
+ * @package		base_default
+ * @author      Felix Moche <felix@kreativkonzentrat.de>
+ * @copyright	2012-2013 Kreativkonzentrat GbR
+ */
+?>
+<?php $item = $this->getGlossary(); ?>
+<h4><?php echo $item->getTitle(); ?></h4>
+<div class="glossary_entry">
+	<h2><?php echo $item->getTitle(); ?></h2>
+	<p><?php echo $item->getGlossaryContent(); ?></p>
+</div>

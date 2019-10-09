@@ -1,0 +1,18 @@
+<?php
+/**
+ * @category	design
+ * @package		base_default
+ * @author      Felix Moche <felix@kreativkonzentrat.de>
+ * @copyright	2012-2013 Kreativkonzentrat GbR
+ */
+?>
+<?php $item = $this->getGlossary(); ?>
+<?php if ($item) : ?>
+<h4><?php echo $item->getTitle(); ?></h4>
+<div class="glossary_entry">
+	<h2><?php echo $item->getTitle(); ?></h2>
+	<p><?php echo $item->getGlossaryContent(); ?></p>
+</div>
+<?php else : ?>
+	<h4><?php echo __('Glossary entry could not be found.');?></h4>
+<?php endif; ?>

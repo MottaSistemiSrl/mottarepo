@@ -1,0 +1,35 @@
+@media #{$min-1025} { 
+
+	.main, .header, .footer, #wp-nav-container, .address, #nav {
+		width: $primary-width;
+	}
+
+	.header-container {
+		.header {
+			clear: both;
+			.secondPart {
+				width: 480px;
+				float: left;
+				text-align: left;
+				margin-left: 55px;
+				> div {
+					float: left;
+					max-width: 320px;
+				}
+			}
+			.thirdPart{
+				width: 210px;
+			}
+		}
+	}
+
+	.footer-container {
+		.footer {
+			> div {
+				text-align: left;
+				min-width: 170px;
+			}
+		}
+	}
+
+}

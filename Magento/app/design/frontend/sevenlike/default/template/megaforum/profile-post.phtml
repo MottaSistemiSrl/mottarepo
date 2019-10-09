@@ -1,0 +1,57 @@
+<?php // @see MG_Megaforum_Block_Profilepost ?>
+
+<div class="profile-user-post">
+    <h2><?php echo $this->__('Post'); ?></h2>
+    <?php $userPostCollection = $this->getUserPostCollection(); ?>
+    <?php echo $this->getPagerHtml(); ?>
+
+
+    <?php if (count($userPostCollection)){ ?>
+        <table class="data-table">
+        <thead>
+        <tr class="first last">
+            <th class="post-width"><?php echo $this->__('Forum'); ?></th>
+            <th class="post-width"><?php echo $this->__('Topic'); ?></th>
+            <th class="post-width"><?php echo $this->__('Commento Post'); ?></th>
+            <th class="post-count"><?php echo $this->__('Creato il'); ?></th>
+        </tr>
+        </thead>
+
+        <?php foreach ($userPostCollection as $post) : ?>
+            <?php $topic = Mage::getModel('megaforum/topic')->load($post->getTopicId()); ?>
+            <?php $forum = Mage::getModel('megaforum/forum')->load($topic->getForumId()); ?>
+
+            <tr class="first last odd">
+                <td class="post-width">
+                    <a href="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forum->getForumId()));  ?>">
+                        <?php echo strip_tags( $text = Mage::helper('core/string')->truncate($forum->getForumName(),60, "...")); ?>
+                    </a>
+                </td>
+                <td class="post-width">
+                    <a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topic->getTopicId() ?>" class="name" >
+                        <?php echo strip_tags( $text = Mage::helper('core/string')->truncate($topic->getTopicName(),60, "...")); ?>
+                    </a>
+                </td>
+                <td class="post-width" >
+                    <a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topic->getTopicId() ?>" class="name" >
+                        <?php echo strip_tags( $text = Mage::helper('core/string')->truncate($post->getPostText(),60, "...")); ?>
+                    </a>
+                </td>
+                <td class="post-count"><?php echo $this->formatDate($post->getPostedAt(), Mage::getStoreConfig('blog/blog/dateformat'), false); ?> </td>
+                <!--<td class="post-count">
+                    <?php /*$postCollection = Mage::getModel('megaforum/post')
+                        ->getCollection()
+                        ->addFieldToFilter('topic_id', $topic->getTopicId());
+                    */?>
+                    <?php /*echo $postCollection->getSize() */?>
+                </td>-->
+            </tr>
+        <?php endforeach; ?>
+
+    </table>
+    <?php } else { ?>
+         <p style="margin: 0px 0 40px 0;">L'utente non ha pubblicato nessun post</p>
+    <?php } ?>
+</div>
+
+

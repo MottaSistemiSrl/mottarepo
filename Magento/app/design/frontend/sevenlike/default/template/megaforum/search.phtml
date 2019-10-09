@@ -1,0 +1,65 @@
+
+<?php 
+$forum = Mage::getModel('megaforum/forum')->getCollection(); 
+$fcount = $forum->count();
+?>
+    <div class="megaforum">
+        <h1>Forum</h1>
+        <h2>Benvenuti nel Forum di BurdaStyle.it!</h2>
+        <h3>Scambia idee e consigli con i membri della Community</h3>
+
+
+<?php
+ $query = $_POST['query']; 
+?>
+
+<div class="topic-name">
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $result = $this->getCollection();  
+	  $result_count = $result->count(); ?>
+<?php echo $this->getToolbarHtml(); ?>
+
+<table class="forum">	
+<tbody>
+
+<?php $_iterator = 0; ?>
+<?php if($result_count != 0) { ?>
+<?php
+foreach($result as $results){ 
+?>
+		<tr class="<?php if( ++$_iterator == sizeof($fcount) ): ?><?php endif; ?>  <?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+										
+			<td><a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$results['topic_id'] ?>"><?php  echo "<p><h3>".$results['topic_name']."</h3></a>".$results['message']."</p>";?></td>			
+
+		</tr>	
+<?php
+}
+?>
+<?php
+}
+else {  
+?>
+		<tr class="<?php if( ++$_iterator == sizeof($fcount) ): ?><?php endif; ?>  <?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+										
+					 <td class="a-center"><?php  echo "No Results Matches Search " ."<p><h3>"."'$query'"."</h3></p>"; ?></td>			
+
+		</tr>
+<?php
+}
+?>
+		
+</tbody>
+</table></div>
+</div>
+
+
+
+<script language='javascript'>
+
+function slectBox(sel) {
+var value = sel.options[sel.selectedIndex].value; 
+self.location=value;
+}
+
+</script>

@@ -1,0 +1,45 @@
+<?php
+
+$collection = Mage::getModel('catalog/product')->getCollection();
+//$collection=$this->getLoadedProductCollection();
+//Mage::getModel('catalog/layer')->prepareProductCollection($collection);
+$collection->addAttributeToFilter("type_id", "downloadable");
+$collection->addAttributeToFilter('attribute_set_id','4');
+$collection->addAttributeToFilter(
+    'status',
+    array('eq' => Mage_Catalog_Model_Product_Status::STATUS_ENABLED)
+);
+$collection->addAttributeToSelect("*");
+$collection->setPageSize(2);
+$collection->getSelect()->order('rand()');
+$collection->addStoreFilter()
+->addTierPriceData()
+->addUrlRewrite()
+->load()
+;
+$p = $collection->load()->getFirstItem();
+?>
+<?php foreach ($collection as $items): ?>
+    <div class="product">
+        <h4 class="product-name prodotto"><a href="<?php echo $items->getProductUrl(); ?>"><?php echo $items->getName(); ?></a></h4>
+        <div class="leftProd">
+            <a href="<?php echo $items->getProductUrl(); ?>"><img src="<?php echo $items->getImageUrl(); ?>" /></a>
+        </div>
+        <div class="rightProd">
+            <!--<p class="sku"><?php /*echo $items->getSku(); */?></p>-->
+            <div class="doubleData">
+                <span class="tg">Tg: <?php echo $items->getAttributeText("size"); ?></span>
+                <span class="lvl">Livello: <?php echo $items->getAttributeText("livello"); ?></span>
+            </div>
+			<?php
+$_coreHelper = $this->helper('core');
+$_taxHelper  = $this->helper('tax');
+$priceIncTax = $_taxHelper->getPrice($_product, $_product->getPrice(), true);
+$priceIncTax = $priceIncTax; ?>
+            <?php echo Mage::helper('tax')->getPrice($items, $items->getFinalPrice()); ?>
+            <button type="button" title="Scopri" class="button btn-scopri" onclick="setLocation('<?php echo $items->getProductUrl(); ?>')">
+                <span><span>Scopri</span></span>
+            </button>
+        </div>
+    </div>
+<?php endforeach; ?>

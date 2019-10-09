@@ -1,0 +1,20 @@
+<?php $_items = $this->getItems(); ?>
+<div class="page-title">
+    <h1><?php echo Mage::helper('mediaserver')->__('I miei video') ?></h1>
+</div>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php if(count($_items)): ?>
+	<ul>
+		<?php foreach ($_items as $_item): ?>
+			<li>
+				<a href="<?= $_item->getProductUrl() ?>?play=1"><img src="<?= $_item->getImageUrl() ?>" /></a>
+				<a href="<?= $_item->getProductUrl() ?>"><?= $_item->getName() ?></a>
+			</li>
+		<?php endforeach ?>
+	</ul>
+<?php else: ?>
+    <p><?php echo Mage::helper('mediaserver')->__('Non hai ancora acquistato alcun video'); ?></p>
+<?php endif; ?>
+<div class="buttons-set">
+    <p class="back-link"><a href="<?php echo $this->escapeUrl($this->getBackUrl()) ?>"><small>&laquo; </small><?php echo $this->__('Back') ?></a></p>
+</div>

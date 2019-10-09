@@ -1,0 +1,307 @@
+<div class="megaforum">
+<h1>Mega Forum</h1><br><br><br>
+
+<?php 
+$id = $this->getForumId(); 
+$forum = Mage::getModel('megaforum/forum')->getCollection(); 
+$fcount = $forum->count();
+?>
+
+<table style="width:686px;">
+		<tr>
+			<td class="list">
+				Go To :
+			</td>
+			<td>
+				<select class="selection" onchange="slectBox(this)" id='selectedForum'>  
+						  <option id="0" value="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => 0));  ?>">Index</option>			
+						  <?php foreach($forum as $forums){ ?>
+						  <option id="<?php echo $forums->getForumId(); ?>" value="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forums->getForumId()));  ?>"
+						  <?php if($id == $forums->getForumId()) echo "selected"; ?>> <?php echo $forums->getForumName(); ?> </option>					 
+						  <?php
+						  }
+						  ?>
+				</select>
+			</td>
+			
+			<td  style="float:right;">	
+				<?php $watchlist = Mage::getModel('megaforum/watchlist')->getCollection()->count(); ?>
+				<a class="rss-value" href="<?php echo Mage::getUrl('megaforum/index/mywatchlist'); ?>"> <strong><?php echo "[".$watchlist."]" ?></strong></a>&nbsp;
+				<a href="<?php echo Mage::getUrl('megaforum/forum/rss'); ?>"><img src="<?php echo $this->getSkinUrl('images/rss-btn.png') ?>" /></a>&nbsp;
+			</td>
+		</tr>
+</table>
+<br>
+
+<?php if ($id==0) { ?>
+
+<form method="post" action="<?php echo Mage::getUrl('megaforum/index/search'); ?>">
+	<table>
+		<tbody><tr>
+			<td width="445">
+				<h3>View All Forums</h3>
+			</td>
+			<td>
+				<input type="text" name="query" value="SEARCH" onblur="if(this.value == '') { this.value='SEARCH'}" onfocus="if (this.value == 'SEARCH') {this.value=''}">      
+				<button title="Search" type="submit" class="image-button"><span>Search Forum</span></button>
+			</td>
+				</tr>
+	</tbody></table>
+</form>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $forum = $this->getCollection(); ?>
+<?php echo $this->getToolbarHtml(); ?>
+
+	<table class="forum">
+	<thead>
+		<tr>
+			<th colspan="2">Forum Name</th>
+			<th>Total Topics</th>
+			<th>Total posts</th>
+			<th class="reply">Latest Reply</th>
+		</tr>
+	</thead>
+	
+<tbody>
+<?php $_iterator = 0; ?>
+<?php
+foreach($forum as $forums){
+$adminName = Mage::getModel('admin/user')->load($forums->getCreatedBy());
+$activeForum = Mage::getModel('megaforum/forum')->load($forums->getStatus()); 
+?>
+	<?php if($forums['status'] == "Active") { ?>
+		<tr class="<?php if( ++$_iterator == sizeof($fcount) ): ?><?php endif; ?>  <?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+				
+					
+					
+								<td class="details"><img src="<?php echo $this->getSkinUrl('images/user.png') ?>" /></td>
+								<td><a href="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forums->getForumId())); ?>"><strong><?php echo $forums->getForumName(); ?></strong></a>
+                                    <br>Created At : <?php echo $forums->getCreatedAt(); ?><br>Created By : <?php echo $adminName->getUsername(); ?>
+                                </td>
+						
+					
+				
+								
+				
+					
+					<?php $topics = Mage::getModel('megaforum/topic')->getCollection()->addFieldToFilter("forum_id",$forums->getForumId()); ?>
+					<td><?php echo $topics->count() ?></td>
+					
+					<?php
+					$topicCount = array(); 
+					foreach($topics as $topic){ 
+					array_push($topicCount, $topic->getTopicId()); 	}
+				    $post = Mage::getModel('megaforum/post')->getCollection()->addFieldToFilter("topic_id",array('in' => $topicCount));  
+					?>										
+					<td><?php echo $post->count();?></td>
+					
+					<?php
+					$topicCount = array(); 
+					foreach($topics as $topic){ 
+					array_push($topicCount, $topic->getTopicId()); 	}
+				    $post = Mage::getModel('megaforum/post')->getCollection()->addFieldToFilter("topic_id",array('in' => $topicCount))->getLastItem();  
+					?>
+					
+<?php $customerName = Mage::getModel('customer/customer')->load($post->getPostedBy());  ?>
+	
+<?php if($post['posted_by'] != NULL) { ?>
+<td class="last-table">
+<a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$post->getTopicId() ?>">
+<p><?php echo $text = substr($post->getPostText(),0,500); ?></p>
+</a>
+<p>Posted At : <?php echo $post->getPostedAt(); ?><br>
+Posted By : <?php echo $customerName->getFirstname(); ?></p>
+</td>
+					<?php } else { ?>
+					<td><?php echo 'No Replies'?></td> 
+					<?php } ?>
+		</tr>	
+<?php
+}
+}
+?>
+</tbody>
+</table><br><br>
+
+<div class="bubble">
+<div class="rectangle"><h3>Mega Forum Statistic</h3></div>
+<div class="triangle-l"></div>
+<div class="triangle-r"></div>
+<div class="info">
+
+<?php
+$topic_count = Mage::getModel('megaforum/topic')->getCollection()->count(); 
+$post_count = Mage::getModel('megaforum/post')->getCollection()->count(); 
+$activeMembers_count = Mage::getModel('customer/customer')->getCollection()->count(); 
+
+/*$first = date("M j,Y h:i:s A", Mage::getModel('core/date')->timestamp(time()));
+Mage::log($first);
+$duration = '-5 minutes';
+$last = date('M j,Y h:i:s A', strtotime($duration, strtotime($first)));*/
+
+$onlineCustomers = Mage::getModel('log/visitor_online')->prepare()->getCollection();
+/*$onlineCustomers->addFieldToFilter('last_visit_at', array('lteq' => $first));
+Mage::log($onlineCustomers->count());
+$onlineCustomers->addFieldToFilter('last_visit_at', array('gteq' => $last));
+Mage::log($last);
+Mage::log($onlineCustomers->count());*/
+?>
+
+ <p>Total Forums:  <strong><?php echo $fcount; ?></strong></p>
+ <p>Total Topics:  <strong><?php echo $topic_count; ?></strong></p>
+ <p>Total Posts:  <strong><?php echo $post_count; ?></strong></p>
+ <p>Total Active Members:  <strong><?php echo $activeMembers_count; ?></strong></p>
+ <p>Total Online Users:  <strong><?php echo $onlineCustomers->count(); ?></strong></p>
+
+</div>
+</div>
+
+<?php } else { ?>
+
+<?php $forum = Mage::getModel('megaforum/forum')->load($id); ?>
+
+<div class="right">
+
+			<?php	if(Mage::getSingleton('customer/session')->isLoggedIn()) { ?>
+			
+					<a href="<?php echo Mage::getUrl('megaforum/index/mytopic', array('forum_id' => $forum->getForumId()));?>"><button class="forum-button"><strong>Add New Topic</strong></button></a>							
+
+			<?php } ?> 
+</div>
+<br/>
+<br/>
+
+<form method="post" action="<?php echo Mage::getUrl('megaforum/index/search'); ?>">
+	<table>
+		<tbody>
+
+		<tr>
+			<td width="445">
+				<h3>View Forum "<?php echo $forum->getForumName(); ?>" Topics</h3>
+			</td>
+			<td>
+				<input type="text" name="query" value="SEARCH" onblur="if(this.value == '') { this.value='SEARCH'}" onfocus="if (this.value == 'SEARCH') {this.value=''}">      
+				<button title="Search" type="submit" class="image-button"><span>Search Forum</span></button>			
+			</td>
+				</tr>
+	</tbody></table>
+</form>
+
+<?php $_iterator = 0; 
+$topic = Mage::getModel('megaforum/topic')->getCollection()->addFieldToFilter("forum_id",$id); ?>
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $topic = $this->getCollection(); ?>
+<?php echo $this->getToolbarHtml(); ?>
+
+<table class="forum">
+
+	<thead>
+		<tr>
+                        <th></th>
+			<th colspan="2">Topic Name</th>
+			<th>Total posts</th>
+			<th>Views</th>
+			<th class="reply">Latest Reply</th>
+		</tr>
+	</thead>
+	
+	
+
+
+<?php
+foreach($topic as $topics){
+$customerName = Mage::getModel('customer/customer')->load($topics->getCreatedBy());
+$activeTopics = Mage::getModel('megaforum/topic')->load($topics->getStatus()); 
+?>
+		<?php if($topics['status'] == "Active") { ?>
+		<tr class="<?php if( ++$_iterator == sizeof($fcount) ): ?><?php endif; ?>  <?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+		
+	<?php $forumUser =  Mage::getModel('megaforum/forumuser')->getCollection()->addFieldToFilter("user_id",$customerName->getId())->getFirstItem(); ?>	
+				   
+              <td><img src="<?php echo Mage::getBaseUrl('media').$forumUser->getImage();?>" alt="" width="50" height="50" title="" /></td>	
+				
+					
+								<td class="details"><img src="<?php echo $this->getSkinUrl('images/user.png') ?>" /></td>
+								
+								<td width="132px">
+								<a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topics->getTopicId() ?>">
+								<p><?php echo $topics->getTopicName(); ?></p></a>
+								<p>Created At : <?php echo $topics->getCreatedAt(); ?><br>
+								Created By : <?php echo $customerName->getFirstname(); ?></p>
+								</td>
+								
+					
+					
+					
+					<?php $posts = Mage::getModel('megaforum/post')->getCollection()->addFieldToFilter("topic_id",$topics->getTopicId()); ?>
+					<td class="post-count"><?php echo $posts->count() ?></td>
+					
+					<td><?php echo $topics->getViews(); ?></td>
+					
+					<?php $replies = Mage::getModel('megaforum/post')->getCollection()->addFieldToFilter("topic_id",$topics->getTopicId())->getLastItem(); 
+					$customerName = Mage::getModel('customer/customer')->load($replies->getPostedBy()); ?>	
+					<?php if($replies['posted_by'] != NULL) { ?>
+					<td><a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topics->getTopicId() ?>">
+					<p><?php echo $text = substr($replies->getPostText(),0,500); ?></p></a>
+					<p>Posted At : <?php echo $replies->getPostedAt(); ?><br>
+					Posted By : <?php echo $customerName->getFirstname(); ?></p></td>
+					<?php } else { ?>
+					<td><?php echo 'No Replies'?> </td>  
+					<?php } ?>
+					
+		</tr>	
+<?php
+}
+}
+?>
+</table><br><br>
+
+<div class="bubble">
+<div class="rectangle"><h3>Mega Forum Statistic</h3></div>
+<div class="triangle-l"></div>
+<div class="triangle-r"></div>
+<div class="info">
+
+<?php
+$topic_count = Mage::getModel('megaforum/topic')->getCollection()->count(); 
+$post_count = Mage::getModel('megaforum/post')->getCollection()->count(); 
+$activeMembers_count = Mage::getModel('customer/customer')->getCollection()->count(); 
+
+/*$first = date("M j,Y h:i:s A", Mage::getModel('core/date')->timestamp(time()));
+Mage::log($first);
+$duration = '-5 minutes';
+$last = date('M j,Y h:i:s A', strtotime($duration, strtotime($first)));*/
+
+$onlineCustomers = Mage::getModel('log/visitor_online')->prepare()->getCollection();
+/*$onlineCustomers->addFieldToFilter('last_visit_at', array('lteq' => $first));
+Mage::log($onlineCustomers->count());
+$onlineCustomers->addFieldToFilter('last_visit_at', array('gteq' => $last));
+Mage::log($last);
+Mage::log($onlineCustomers->count());*/
+?>
+
+ <p>Total Forums:  <strong><?php echo $fcount; ?></strong></p>
+ <p>Total Topics:  <strong><?php echo $topic_count; ?></strong></p>
+ <p>Total Posts:  <strong><?php echo $post_count; ?></strong></p>
+ <p>Total Active Members:  <strong><?php echo $activeMembers_count; ?></strong></p>
+ <p>Total Online Users:  <strong><?php echo $onlineCustomers->count(); ?></strong></p>
+
+</div>
+</div><br>
+
+<?php
+}
+?>
+</div>
+
+<script language='javascript'>
+
+function slectBox(sel) {
+var value = sel.options[sel.selectedIndex].value; 
+self.location=value;
+}
+
+</script>
+

@@ -1,0 +1,47 @@
+
+<div class="recent-topics">
+
+<div class="block block-account">
+
+    <div class="topic-heading">
+        <strong class="recent-forum" style="background:none; padding:0;"><span><?php echo $this->__('MY RECENT TOPICS') ?></span></strong>
+    </div>
+
+    <div class="block-content">
+	<?php $topicCollection = Mage::getModel('megaforum/topic')->getCollection()->setOrder('topic_id', 'DESC')->setPageSize(5); ?>
+        <ul> 
+			<?php foreach($topicCollection as $topicCollections) { 
+				  $customerName = Mage::getModel('customer/customer')->load($topicCollections->getCreatedBy());?>
+			<li>
+			<p><strong><a title="" class="empty" style="padding:0;" href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topicCollections->getTopicId() ?>">
+                        <?php echo $topicCollections->getTopicName();?></a></strong>Created By : <?php echo $customerName->getFirstname(); ?><br>Created At : <?php echo $topicCollections->getCreatedAt(); ?></p>
+			</li>
+			<?php 
+			} 
+			?>                                                             
+        </ul>
+    </div>
+</div>
+
+<div class="block block-account">
+
+    <div class="topic-heading">
+        <strong class="recent-forum" style="background:none; padding:0;"><span><?php echo $this->__('MY RECENT POSTS') ?></span></strong>
+    </div>
+
+    <div class="block-content">
+	<?php $postCollection = Mage::getModel('megaforum/post')->getCollection()->setOrder('post_id', 'DESC')->setPageSize(5); ?>
+        <ul> 
+			<?php foreach($postCollection as $postCollections) { 
+				  $customerName = Mage::getModel('customer/customer')->load($postCollections->getPostedBy()); ?> 
+			<li>
+			<p><strong><a title="" class="empty" style="padding:0;" href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$postCollections->getTopicId() ?>"><?php echo $postCollections->getPostText();?></a></strong>Posted By : <?php echo $customerName->getFirstname(); ?><br>Posted At : <?php echo $postCollections->getPostedAt(); ?></p>
+			</li>
+			<?php 
+			} 
+			?>                                                             
+        </ul>
+    </div>
+</div>
+
+</div>

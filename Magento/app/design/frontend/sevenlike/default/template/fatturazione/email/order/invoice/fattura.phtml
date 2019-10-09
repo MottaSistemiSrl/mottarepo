@@ -1,0 +1,58 @@
+<?php
+/**
+ * Created by JetBrains PhpStorm.
+ * User: Andrea Becchio
+ * Date: 06/07/13
+ * Time: 11.49
+ * To change this template use File | Settings | File Templates.
+ */
+$_order=$this->getOrder();
+$invoices = $this->getOrder()->getInvoiceCollection();
+$currYear = date('Y');
+?>
+<?php foreach($invoices as $_invoice):?>
+    <?php if($_invoice->getState() == Mage_Sales_Model_Order_Invoice::STATE_PAID):?>
+        <?php $newIncrementId = str_replace('/' .$currYear,'',$_invoice->getIncrementId());?>
+        <tr>
+            <td style="padding: 0 0 20px 0">
+                <?php if($_invoice->getTipo()==Sevenlike_Fatturazione_Model_Tipodoc::FATTURA):?>
+                    <h2 style="font-size:18px; font-weight:normal; margin:0;">La tua Fattura #<?php echo $newIncrementId ?> per l'ordine #<?php echo $_order->getIncrementId()?></h2>
+                <?php else:?>
+                    <h2 style="font-size:18px; font-weight:normal; margin:0;">La tua Ricevuta #<?php echo $newIncrementId ?> per l'ordine #<?php echo $_order->getIncrementId()?></h2>
+                <?php endif;?>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 0 20px 0">
+
+                <table cellspacing="0" cellpadding="0" border="0" width="650" style="border:1px solid #eaeaea">
+                    <thead>
+                    <tr>
+                        <?php if($_invoice->getTipo()==Sevenlike_Fatturazione_Model_Tipodoc::FATTURA):?>
+                            <th align="left" bgcolor="#EAEAEA" style="font-size:13px;padding:3px 9px"><?php echo $this->__('Fattura') ?></th>
+                        <?php else:?>
+                            <th align="left" bgcolor="#EAEAEA" style="font-size:13px;padding:3px 9px"><?php echo $this->__('Ricevuta') ?></th>
+                        <?php endif;?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr bgcolor="#F6F6F6">
+                        <td align="left" style="background:#f6f6f6;padding:20px 10px">
+                            <?php $url ='';
+                            $url = Mage::app()->getStore($_order->getStoreId())->getBaseUrl() . 'fatturazione/stampa/printInvoice/id/'.base64_encode($_order->getId().':'.$_invoice->getId());
+                            ?>
+                            <?php if($_invoice->getTipo()==Sevenlike_Fatturazione_Model_Tipodoc::FATTURA):?>
+                                <?php echo sprintf(Mage::helper('fatturazione')->__('<a href="%s" style="padding:5px;background:#ec3066;text-decoration:none;color:#fff">Clicca qui per scaricare la fattura &raquo;</a>'),$url);?>
+                                <?php echo sprintf(Mage::helper('fatturazione')->__('<a href="%s" style="padding:5px;background:#ec3066;text-decoration:none;color:#fff">Click here to download the invoice &raquo;</a>'),$url);?>
+                            <?php else:?>
+                                <?php echo sprintf(Mage::helper('fatturazione')->__('<a href="%s" style="padding:5px;background:#ec3066;text-decoration:none;color:#fff">Clicca qui per scaricare la ricevuta di pagamento &raquo;</a>'),$url);?>
+                                <?php echo sprintf(Mage::helper('fatturazione')->__('<a href="%s" style="padding:5px;background:#ec3066;text-decoration:none;color:#fff">Click here to download the receipt &raquo;</a>'),$url);?>
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    <?php endif;?>
+<?php endforeach;?>

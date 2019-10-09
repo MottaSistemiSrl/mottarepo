@@ -1,0 +1,114 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+    $columns = $this->getColumns();
+?>
+<table class="data-table" id="wishlist-table">
+    <tbody>
+        <?php if (count($this->getItems())): ?>
+            <?php foreach ($this->getItems() as $item): ?>
+                <?php 
+                    $product = $item->getProduct(); 
+                    $_model = Mage::getModel('catalog/product')->loadByAttribute("sku", $product->getSku());
+                    // $options = $this->getChild('customer.wishlist.item.options')->setItem($item)->getConfiguredOptions();
+                    $options = Mage::getBlockSingleton('wishlist/customer_wishlist_item_options')->setItem($item)->getConfiguredOptions();
+                ?>
+                <!-- <pre><?php print_r($product->getData()); ?></pre> -->
+                <tr id="item_<?php echo $item->getId();?>">
+                    <td class="img">
+                        <a class="product-image" href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>">
+                            <img src="<?php echo $this->helper('catalog/image')->init($product, 'small_image')->resize(97, 130); ?>" width="97" height="130" alt="" />
+                        </a>
+                    </td>
+                    <td class="name">
+                        <h3 class="product-name"><a href="<?php echo $this->getProductUrl($item) ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>">
+                            <?php echo $this->escapeHtml($product->getName()) ?></a>
+                        </h3>
+                        <p class="sku"><?= $product->getSku(); ?></p>
+                    </td>
+                    <td class="data">
+                        <div class="taglia">
+                            <?php if($_model->getAttributeText("size")) : ?>
+                                <p class="labelSize">TAGLIA</p>
+                                <p class="valueSize"><?php echo $_model->getAttributeText("size"); ?></p>
+                            <?php endif; ?>
+                            <?php if($_model->getAttributeText("livello")) : ?>
+                                <p class="labelLevel">LIVELLO</p>
+                                <p class="valueLevel"><?php echo $_model->getAttributeText("livello"); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <div class="formato">
+                            <p class="labelFormat">FORMATO</p>
+                            <p class="valueFormat"><?php echo $_model->getAttributeText("tipologia"); ?></p>
+                        </div>
+                    </td>
+                    <td class="prezzo">
+                        <p class="labelPrice">PREZZO</p>
+                        <?php echo $this->getPriceHtml($product, true);?>
+                        <div class="add-to-cart">
+                            <?php if ($product->isSaleable()): ?>
+                                <input type="hidden" class="input-text qty validate-not-negative-number" name="qty[<?php echo $item->getId() ?>]" value="1" />
+
+                                <button type="button" title="<?php echo $this->__('Add to Cart') ?>" onclick="addWItemToCart(<?php echo $item->getId()?>);" class="button btn-cart">
+                                    <span><span><?php echo $this->__('Add to Cart') ?></span></span>
+                                </button>
+
+                            <?php else: ?>
+                                <?php if ($product->getIsSalable()): ?>
+                                    <p class="availability in-stock"><span><?php echo $this->__('In stock') ?></span></p>
+                                <?php else: ?>
+                                    <!-- prodotto esaurito -->
+                                    <!--<p class="availability out-of-stock"><span><?php //echo $this->__('Out of stock') ?></span></p>-->
+                                    <p class="non-disponibile"><?php echo $this->__('Prodotto non ancora disponibile per l\'acquisto') ?></p>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                    <td class="remove">
+                        <a href="<?php echo $this->getItemRemoveUrl($item); ?>" onclick="return confirmRemoveWishlistItem();" title="<?php echo $this->__('Remove Item') ?>" class="btn-remove btn-remove2">
+                            <?php echo $this->__('Remove item');?>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach ?>
+        <?php else: ?>
+            <td colspan="<?php echo count($columns);?>" class="wishlist-empty buttons-set"><?php echo $this->__('This Wishlist has no Items');?></td>
+        <?php endif; ?>
+    </tbody>
+</table>
+<?php foreach ($columns as $column): ?>
+    <?php echo $column->getAdditionalHtml();?>
+<?php endforeach; ?>
+<script type="text/javascript">
+//<![CDATA[
+    decorateTable('wishlist-table');
+
+<?php foreach ($columns as $column): ?>
+    <?php echo $column->getJs();?>
+<?php endforeach; ?>
+//]]>
+</script>

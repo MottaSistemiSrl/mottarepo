@@ -1,0 +1,551 @@
+
+<?php
+/**
+ * OneStepCheckout
+ * 
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to One Step Checkout AS software license.
+ *
+ * License is available through the world-wide-web at this URL:
+ * https://www.onestepcheckout.com/LICENSE.txt
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to mail@onestepcheckout.com so we can send you a copy immediately.
+ *
+ * @category   Idev
+ * @package    Idev_OneStepCheckout
+ * @copyright  Copyright (c) 2009 OneStepCheckout  (https://www.onestepcheckout.com/)
+ * @license    https://www.onestepcheckout.com/LICENSE.txt
+ */
+
+$formErrors = $this->getParentBlock()->formErrors;
+$formErrors = (!empty($formErrors['billing_errors'])) ? $formErrors['billing_errors'] : array();
+
+$helper = Mage::helper('onestepcheckout/checkout');
+$dataHelper = Mage::helper('onestepcheckout');
+
+    $billingFields['firstname'] = '
+        <div class="osc-short input-box input-firstname'.((in_array('firstname', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:firstname">'.$this->__('First Name').' <span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="billing[firstname]" id="billing:firstname" value="'.$dataHelper->clearDash($this->getQuote()->getBillingAddress()->getFirstname()).'" />
+        </div>';
+    $billingFields['lastname'] = '
+        <div class="osc-short input-box input-lastname'.((in_array('lastname', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:lastname">'.$this->__('Last Name').' <span class="required">*</span></label><br />
+            <input class="required-entry input-text" type="text" name="billing[lastname]" id="billing:lastname" value="'.$dataHelper->clearDash($this->getQuote()->getBillingAddress()->getLastname()).'" />
+        </div>';
+		
+
+    ?>
+<div id="co-billing-form">
+
+<ul class="form-list">
+<?php if(!$this->isCustomerLoggedIn() || in_array('email_registered', $formErrors)): ?>
+    <?php $billingFields['email'] = '
+        <div class="clearfix" id="onestepcheckout-email-error" '.((!in_array('email_registered', $formErrors)) ? 'style="display: none"' : '').'>
+            <div id="onestepcheckout-email-error-message" class="onestepcheckout-error">'.
+                ((in_array('email_registered', $formErrors)) ? $this->__('Email address already registered. Please <a href="#" onclick="login_popup.show(); return false;">login now</a> or use a different email address.') : $this->__('Invalid email address.'))
+            .'</div>
+        </div>';
+    ?>
+<?php endif; ?>
+<?php if(!$this->isCustomerLoggedIn()): ?>
+    <?php $billingFields['email'] = $billingFields['email'].'
+        <div class="osc-short input-box input-email'.((in_array('email', $formErrors)) ? ' input-error' : '').'">
+            <label for="billing:email">'.$this->__('Email Address').' <span class="required">*</span></label><br />
+            <input type="email" name="billing[email]" id="billing:email" value="'.$dataHelper->clearDash($this->getQuote()->getBillingAddress()->getEmail()).'" title="'.$this->__('Email Address') .'" class="validate-email required-entry input-text" />
+        </div>';
+    ?>
+<?php endif; ?>
+
+<?php
+// In some cases email might be 2 div-s inside one <li> and it messes up a good solution for css widths.
+// Therefore here I make sure email creates just one div inside <li>
+if (in_array('email', $billingFields) && $billingFields['email']) {
+    $billingFields['email'] = '<div style="overflow: hidden">'.$billingFields['email'].'</div>';
+}
+?>
+<li>
+    <fieldset>
+        <input type="hidden" name="billing[address_id]" value="<?php echo $this->getQuote()->getBillingAddress()->getId() ?>" id="billing:address_id" />
+        <ul>
+            <li class="fields"><?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getQuote()->getBillingAddress()->getFirstname() ? $this->getQuote()->getBillingAddress() : $this->getQuote()->getCustomer())->setForceUseCustomerRequiredAttributes(!$this->isCustomerLoggedIn())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?></li>
+            <li class="fields">
+
+                <div class="field">
+
+                    <label for="billing:indirizzo_aziendale" ><?php echo $this->__('Tipo Utente'); ?></label>
+                    <div class="input-box">
+                        <?php
+                        $check1 = ($this->getQuote()->getBillingAddress()->getIndirizzoAziendale())?'':'selected';
+                        $check2 = ($this->getQuote()->getBillingAddress()->getIndirizzoAziendale())?'selected':'';
+                        ?>
+                        <select id="billing:indirizzo_aziendale" name="billing[indirizzo_aziendale]">
+
+                            <option value="0" <?php echo $check1 ?> ><?php echo $this->__('Privato')?></option>
+                            <option value="1" <?php echo $check2 ?> ><?php echo $this->__('Azienda')?></option>
+                        </select>
+                    </div>
+                </div>
+            
+
+
+            </li>
+			
+            <li id='company_container' class="fields wide">
+                <label for="billing:company" class="required"><?php echo $this->__('Company') ?>*</label>
+                <div class="input-box">
+                    <input type="text" id="billing:company" name="billing[company]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getCompany()) ?>" title="<?php echo $this->__('Company') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('company') ?>" />
+                </div>
+            </li>
+			
+			
+            <li class="fields wide">
+
+                <div id='partita_iva_container' class="field" style="width:100%">
+
+                    <label for="billing:partita_iva" class="required"><?php echo $this->__('Partita Iva') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" id="billing:partita_iva" name="billing[partita_iva]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getPartitaIva()) ?>" title="<?php echo $this->__('Partita Iva') ?>" class="input-text validate-partita_iva validate-partitaiva" />
+                    </div>
+                </div>
+                <div id="vat_id_container" class="wide">
+
+                    <label for="billing:vat_id" class="required"><?php echo $this->__('Codice Fiscale') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" class="validate-codicefiscale" id="billing:vat_id" name="billing[vat_id]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getVatId()) ?>" title="<?php echo $this->__('Codice Fiscale') ?>" class="input-text validate-codice_fiscale validate-codicefiscale" />
+                    </div>
+                </div>
+            </li>
+
+
+
+
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+            <li class="wide">
+                <div class="field" style="width:100%">
+                    <label for="billing:email" class="required" ><?php echo $this->__('Email Address') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" name="billing[email]" id="billing:email" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="input-text validate-email required-entry" />
+                    </div>
+                </div>
+                <?php endif; ?>
+            </li>
+
+            <?php $_streetValidationClass = $this->helper('opc')->getAttributeValidationClass('street'); ?>
+            <li class="wide">
+                <div class="field"style="width:100%">
+                    <label for="billing:street1" class="required"><?php echo $this->__('Indirizzo') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('Street Address') ?>" name="billing[street][]" id="billing:street1" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getStreet(2)) ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                    </div>
+                </div>
+				                <div class="field"style="width:100%">
+                    <label for="billing:street0" class="required"><?php echo $this->__('Numero Civico') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('Street Address') ?>" name="billing[street][]" id="billing:street0" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getStreet(2)) ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                    </div>
+                </div>
+            </li>
+            <?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+            <?php if ($this->helper('opc')->isVatAttributeVisible()) : ?>
+                <li class="wide">
+                    <label for="billing:vat_id"><?php echo $this->__('VAT Number') ?></label>
+                    <div class="input-box">
+                        <input type="text" id="billing:vat_id" name="billing[vat_id]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getVatId()) ?>" title="<?php echo $this->__('VAT Number') ?>" class="validate-codicefiscale input-text <?php echo $this->helper('opc')->getAttributeValidationClass('vat_id') ?>" />
+                    </div>
+                </li>
+            <?php endif; ?>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:city" class="required"><?php echo $this->__('City') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('City') ?>" name="billing[city]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getCity()) ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('city') ?>" id="billing:city" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="billing:region_id" class="required"><?php echo $this->__('State/Province') ?>*</label>
+                    <div class="input-box">
+                        <select id="billing:region_id" name="billing[region_id]" title="<?php echo $this->__('State/Province') ?>" class="validate-select" style="display:none;">
+                            <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                        </select>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                            $('billing:region_id').setAttribute('defaultValue',  "<?php echo $this->getQuote()->getBillingAddress()->getRegionId() ?>");
+                            //]]>
+                        </script>
+                        <input type="text" id="billing:region" name="billing[region]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getRegion()) ?>"  title="<?php echo $this->__('State/Province') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                    </div>
+                </div>
+            </li>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:postcode" class="required"><?php echo $this->__('Zip/Postal Code') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('Zip/Postal Code') ?>" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getPostcode()) ?>" class="input-text validate-zip-international <?php echo $this->helper('opc')->getAttributeValidationClass('postcode') ?>" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:country_id" class="required"><?php echo $this->__('Country') ?>*</label>
+                    <div class="input-box">
+                        <?php echo $this->getCountryHtmlSelect('billing') ?>
+                    </div>
+                </div>
+            </li>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:telephone" class="required"><?php echo $this->__('Telephone') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" name="billing[telephone]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getTelephone()) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('telephone') ?>" id="billing:telephone" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:fax"><?php echo $this->__('Fax') ?></label>
+                    <div class="input-box">
+                        <input type="text" name="billing[fax]" value="<?php echo $this->escapeHtml($this->getQuote()->getBillingAddress()->getFax()) ?>" title="<?php echo $this->__('Fax') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('fax') ?>" id="billing:fax" />
+                    </div>
+                </div>
+            </li>
+			
+			<div class="field" style="width:100%" >
+                     <input type="hidden" id="billing:richiesta_fattura" name="billing[richiesta_fattura]" value="1" />
+                    <!--<label for="billing:richiesta_fattura" ><?php// echo $this->__('Richiesta Fattura'); ?></label>-->
+                    <div class="input-box" style="width:100%"><br>
+                        <?php
+                        $check1 = ($this->getQuote()->getBillingAddress()->getRichiestaFattura())?'':'selected';
+                        $check2 = ($this->getQuote()->getBillingAddress()->getRichiestaFattura())?'selected':'';
+                        ?>
+						<label>Se sei un’azienda e vuoi ricevere la fattura scegli qui </label>
+                        <input type="hidden" value="1" id="billing:richiesta_fattura" name="billing[richiesta_fattura]">
+                        <select id="billing:richiesta_fattura" name="billing[richiesta_fattura]">
+                            <option value="0" <?php echo $check1 ?> ><?php echo $this->__('No')?></option>
+                            <option value="1" <?php echo $check2 ?> ><?php echo $this->__('Yes')?></option>
+                        </select>
+                    </div>
+                </div><br><br>
+			
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+
+                <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+                <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+                <?php if ($_dob->isEnabled() || $_gender->isEnabled()): ?>
+                    <li class="fields">
+                        <?php if ($_dob->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($_gender->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+                        <?php endif ?>
+                    </li>
+                <?php endif ?>
+            <?php endif; ?>
+            <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                <li class="control">
+                    <input type="checkbox" name="billing[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="billing:save_in_address_book" onchange="if(window.shipping) shipping.setSameAsBilling(false);"<?php if ($this->getQuote()->getBillingAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:save_in_address_book"><?php echo $this->__('Save in address book') ?></label>
+                </li>
+            <?php else:?>
+                <li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>
+            <?php endif; ?>
+            <?php echo $this->getChildHtml('form.additional.info'); ?>
+        </ul>
+    </fieldset>
+</li>
+<?php /* Extensions placeholder */ ?>
+<?php echo $this->getChildHtml('checkout.onepage.billing.extra')?>
+<?php if(!$this->isCustomerLoggedIn()): ?>
+    <li class="control">
+        <input type="checkbox" name="billing[create_account]" id="billing:create_account" value="1" title="Crea un account con questi dati"  class="checkbox" checked="checked" />
+        <label for="billing:create_account">Crea un account con questi dati</label>
+    </li>
+    <script type="text/javascript">
+        jQuery(function () {
+            setInterval(function () {
+                jQuery("#billing:create_account").prop("checked", true);
+                jQuery("input[name='billing[create_account]']").prop("checked", true);
+                jQuery("#register-customer-password").removeClass("hidden");
+            }, 500);
+        })
+    </script>
+	
+	
+	
+	
+	
+        <li class="fields">
+		<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_nickname" class="required">Nickname*</label>
+
+                <div class="input-box">
+                    <input id="sevenlike_nickname" name="amcustomerattr[sevenlike_nickname]" value="" class=" required-entry input-text required-entry longer" type="text">
+                </div>
+            </div>
+            <div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_level" class="required" style="display:block;float:none;">Conoscenze di cucito</label>
+                <div class="input-box">
+                    <select class="select" name="amcustomerattr[sevenlike_level]" id="sevenlike_level">
+                        <option selected="selected" value=""></option>
+                        <option value="34">Esperto</option>
+                        <option value="33">Intermedio</option>
+                        <option value="32">Principiante</option>
+                    </select>
+                </div>
+            </div>
+			 
+        </li>
+		
+		<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_city" class="required">Città*</label>
+                <div class="input-box">
+                    <input id="sevenlike_city" name="amcustomerattr[sevenlike_city]" value="" class="required-entry input-text required-entry longer" type="text">
+                </div>
+            </div>
+			<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_provincia" class="required">Provincia*</label>
+                <div class="input-box">
+                    <!--<input id="sevenlike_provincia" name="amcustomerattr[sevenlike_provincia]" value="" class="required-entry input-text required-entry longer" type="text">
+                    -->
+                    <select style="display: block" class="clearBoth required-entry required-entry select" name="amcustomerattr[sevenlike_provincia]" id="sevenlike_provincia">
+                            <option selected="selected" value=""></option>
+                            <option value="1369">AG</option>
+                            <option value="1370">AL</option>
+                            <option value="1371">AN</option>
+                            <option value="1372">AO</option>
+                            <option value="1374">AP</option>
+                            <option value="1354">AQ</option>
+                            <option value="1373">AR</option>
+                            <option value="1375">AT</option>
+                            <option value="1376">AV</option>
+                            <option value="1377">BA</option>
+                            <option value="1381">BG</option>
+                            <option value="1382">BI</option>
+                            <option value="1379">BL</option>
+                            <option value="1380">BN</option>
+                            <option value="1383">BO</option>
+                            <option value="1386">BR</option>
+                            <option value="1385">BS</option>
+                            <option value="1378">BT</option>
+                            <option value="1384">BZ</option>
+                            <option value="1387">CA</option>
+                            <option value="1389">CB</option>
+                            <option value="1391">CE</option>
+                            <option value="1394">CH</option>
+                            <option value="1390">CI</option>
+                            <option value="1388">CL</option>
+                            <option value="1399">CN</option>
+                            <option value="1395">CO</option>
+                            <option value="1397">CR</option>
+                            <option value="1396">CS</option>
+                            <option value="1392">CT</option>
+                            <option value="1393">CZ</option>
+                            <option value="1400">EN</option>
+                            <option value="1404">FC</option>
+							<option value="1443">FE</option>
+                            <option value="1403">FG</option>
+                            <option value="1402">FI</option>
+                            <option value="1401">FM</option>
+                            <option value="1405">FR</option>
+                            <option value="1406">GE</option>
+                            <option value="1407">GO</option>
+                            <option value="1350">GR</option>
+                            <option value="1351">IM</option>
+                            <option value="1352">IS</option>
+                            <option value="1398">KR</option>
+                            <option value="1357">LC</option>
+                            <option value="1356">LE</option>
+                            <option value="1358">LI</option>
+                            <option value="1359">LO</option>
+                            <option value="1355">LT</option>
+                            <option value="1360">LU</option>
+                            <option value="1368">MB</option>
+                            <option value="1361">MC</option>
+                            <option value="1366">ME</option>
+                            <option value="1286">MI</option>
+                            <option value="1362">MN</option>
+                            <option value="1367">MO</option>
+                            <option value="1363">MS</option>
+                            <option value="1364">MT</option>
+                            <option value="1333">NA</option>
+                            <option value="1334">NO</option>
+                            <option value="1335">NU</option>
+                            <option value="1336">OG</option>
+                            <option value="1338">OR</option>
+                            <option value="1337">OT</option>
+                            <option value="1340">PA</option>
+                            <option value="1346">PC</option>
+                            <option value="1339">PD</option>
+                            <option value="1345">PE</option>
+                            <option value="1343">PG</option>
+                            <option value="1347">PI</option>
+                            <option value="1349">PN</option>
+                            <option value="1418">PO</option>
+                            <option value="1341">PR</option>
+                            <option value="1348">PT</option>
+                            <option value="1344">PU</option>
+                            <option value="1342">PV</option>
+                            <option value="1417">PZ</option>
+                            <option value="1420">RA</option>
+                            <option value="1421">RC</option>
+                            <option value="1422">RE</option>
+                            <option value="1419">RG</option>
+                            <option value="1423">RI</option>
+                            <option value="1425">RM</option>
+                            <option value="1424">RN</option>
+                            <option value="1426">RO</option>
+                            <option value="1427">SA</option>
+                            <option value="1430">SI</option>
+                            <option value="1432">SO</option>
+                            <option value="1353">SP</option>
+                            <option value="1431">SR</option>
+                            <option value="1428">SS</option>
+                            <option value="1429">SV</option>
+                            <option value="1433">TA</option>
+                            <option value="1434">TE</option>
+                            <option value="1438">TN</option>
+                            <option value="1436">TO</option>
+                            <option value="1287">TO</option>
+                            <option value="1437">TP</option>
+                            <option value="1435">TR</option>
+                            <option value="1440">TS</option>
+                            <option value="1439">TV</option>
+                            <option value="1408">UD</option>
+                            <option value="1409">VA</option>
+                            <option value="1411">VB</option>
+                            <option value="1412">VC</option>
+                            <option value="1410">VE</option>
+                            <option value="1415">VI</option>
+                            <option value="1413">VR</option>
+                            <option value="1365">VS</option>
+                            <option value="1416">VT</option>
+                            <option value="1414">VV</option>
+                        </select>
+                </div>
+            </div>
+		<div class="field" style="float: none; width: 100%;">
+                <label for="regione" class="required">Regione*</label>
+                <div class="input-box">
+                    <select style="display: block" id="regione" name="amcustomerattr[regione]" class="clearBoth required-entry required-entry select">
+                        <option value="" selected="selected"></option>
+                        <option value="1756">Abruzzo</option>
+                        <option value="1757">Basilicata</option>
+                        <option value="1758">Calabria</option>
+                        <option value="1759">Campania</option>
+                        <option value="1760">Emilia-Romagna</option>
+                        <option value="1761">Friuli-Venezia Giulia</option>
+                        <option value="1762">Lazio</option>
+                        <option value="1763">Liguria</option>
+                        <option value="1764">Lombardia</option>
+                        <option value="1765">Marche</option>
+                        <option value="1766">Molise</option>
+                        <option value="1767">Piemonte</option>
+                        <option value="1768">Puglia</option>
+                        <option value="1769">Sardegna</option>
+                        <option value="1752">Sicilia</option>
+                        <option value="1753">Toscana</option>
+                        <option value="1754">Trentino-Alto Adige</option>
+                        <option value="1755">Umbria</option>
+                        <option value="1750">Valle d'Aosta</option>
+                        <option value="1751">Veneto</option>
+                    </select>
+                </div>
+            </div>
+		<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_nation" class="required">Nazione*</label>
+                <div class="input-box">
+                    <input id="sevenlike_nation" name="amcustomerattr[sevenlike_nation]" value="" class="validate-alpha required-entry input-text required-entry longer" type="text">
+                </div>
+            </div>
+			
+			<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_anno" class="required">Anno di nascita *</label>
+                <div class="input-box">
+                    <input id="sevenlike_anno" name="amcustomerattr[sevenlike_anno]" value="" maxlength="4" class=" required-entry input-text validate-number required-entry longer" type="text">
+                </div>
+            </div>
+		
+		
+		<div class="fieldset" style="float: none; width: 100%;">
+    <ul class="form-list">
+        <li class="fields control">
+            <label for="sevenlike_consenso_dati" class="required"><br>Consenso al trattamento dei miei dati per fini di tipo commerciale e promozionale dei servizi e prodotti offerti da società terze cui Edizioni Raffi srl e Burda International GmbH potranno comunicare i miei dati. *<br><br></label>
+            <div class="input-box">
+                <input id="sevenlike_consenso_dati___1441" class="" type="radio"  value="1441" rel="sevenlike_consenso_dati" name="amcustomerattr[sevenlike_consenso_dati]"> <span style="margin-left: 6px; margin-right: 20px;"> Acconsento </span>
+                <input id="sevenlike_consenso_dati___1442" class="validate-one-required" type="radio"  value="1442" rel="sevenlike_consenso_dati" name="amcustomerattr[sevenlike_consenso_dati]"> <span style="margin-left: 6px;"> Non Acconsento </span>
+            </div>
+        </li>
+    </ul>
+<div class="field" style="float: none; width: 100%;">
+                <label for="sevenlike_image">Avatar (dimensione massima 150x150 pixel - peso 150kb)</label>
+                <div class="input-box">
+                    <input id="sevenlike_image" name="amcustomerattr_sevenlike_image" value="" class="longer" type="file">
+                    <input type="hidden" id="sevenlike_image" name="amcustomerattr[sevenlike_image]" value="">
+                </div>
+            </div>
+</div>
+		
+    <li class="fields hidden" id="register-customer-password">
+        <div class="field" style="float: none; width: 100%;">
+            <label for="billing:customer_password" class="required"><?php echo $this->__('Password') ?>*</label>
+            <div class="input-box">
+                <!--                        Dan Nistor - fix for chrome autocomplete off-->
+                <input type="password" placeholder="password" style="display: none" name="fake" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" autocomplete="off"/>
+                <!--                        Dan Nistor - fix for chrome autocomplete off-->
+                <input type="password" placeholder="password" name="billing[customer_password]" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" class="input-text validate-password" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="field" style="float: none; width: 100%;">
+            <label for="billing:confirm_password" class="required"><?php echo $this->__('Confirm Password') ?>*</label>
+            <div class="input-box">
+                <input type="password" placeholder="password" name="billing[confirm_password]" title="<?php echo $this->__('Confirm Password') ?>" id="billing:confirm_password" class="input-text validate-cpassword" autocomplete="off"/>
+            </div>
+        </div>
+    </li>
+<?php endif;?>
+
+<?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+    <?php $billingFields['save_in_address_book'] = '
+		<ul>
+        <li class="control">
+            <div class="input-box input-save-address">
+                <input type="checkbox" name="billing[save_in_address_book]" value="1" title="'.$this->__('Save in address book').'" id="billing:save_in_address_book" onchange="shipping.setSameAsBilling(false);"'.(($dataHelper->clearDash($this->getQuote()->getBillingAddress()->getSaveInAddressBook())) ? 'checked="checked"':'').' class="checkbox" /><label for="billing:save_in_address_book">'.$this->__('Save in address book').'</label>
+            </div>
+        </li>
+        </ul>';
+    ?>
+<?php else:?>
+    <?php $billingFields['save_in_address_book'] = '
+		<ul>
+		<li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>
+		</ul>';
+    ?>
+<?php endif; ?>
+
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+    var billingRegionUpdater = new RegionUpdater('billing:country_id', 'billing:region', 'billing:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'billing:postcode');
+
+    document.observe('dom:loaded',function(){
+        toggleIndirizzoAziendale(Number($('billing:indirizzo_aziendale').value),'billing:');
+        toggleCodiceFiscale(Number($('billing:richiesta_fattura').value),'billing:');
+        Event.observe('billing:indirizzo_aziendale','change',function(e){
+
+            toggleIndirizzoAziendale(Number(this.value),'billing:');
+        } );
+        Event.observe('billing:richiesta_fattura','change',function(e){
+
+            toggleCodiceFiscale(Number(this.value),'billing:');
+        } );
+
+    });
+
+    $j(document).ready(function(){
+        $j('input[name="billing[create_account]"]').click();
+    });
+    //]]>
+</script>

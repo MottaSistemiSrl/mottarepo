@@ -1,0 +1,225 @@
+.cms-page-view .main .col-main .page-title {
+  padding-bottom: 10px;
+  background: url('../images/divider.png') bottom repeat-x;
+}
+.cms-page-view,
+.glossary {
+	.main {
+		.col-main {
+			width: 715px;
+            margin-bottom: 40px;
+			.page-title {
+				overflow: hidden;
+				padding-top: 1px;
+                margin-top: 0;
+				margin-bottom: 15px;
+				height: auto;
+			}
+			.std {
+              a{
+                text-decoration: underline;
+              }
+              p{
+                @media #{$max-767}{
+                  line-height: $font22;
+                  font-size: $font12;
+                }
+              }
+				strong {
+					font-weight: normal !important;
+					font-family: $opensans-bold;
+                  a{
+                    font-weight: normal !important;
+                    font-family: $opensans-bold;
+                    &:hover{
+                      color: $grigio-chiarone;
+                    }
+                  }
+				}
+                h1,h2,h3,h4{
+                  font-family: $opensans-regular;
+                  margin-top: 20px;
+                  margin-bottom: 20px;
+                }
+              img.bordo{
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+                padding: 10px;
+              }
+              p.didascalia{
+                text-align: center;
+                clear: both;
+              }
+              div.blocco{
+                clear: both;
+                padding-top: 20px;
+                padding-bottom: 20px;
+                display: block;
+                overflow: hidden;
+                .right{
+                  width: 470px;
+                }
+              }
+              div.float-left{
+                float: left;
+                clear: both;
+              }
+              ul{
+                padding-left: 0;
+                li {
+                  margin: 8px 0;
+                  list-style: none;
+                  @media #{$max-767}{
+                    line-height: $font22;
+                    font-size: $font13mall;
+                  }
+                  a {
+                    color: $grigio !important;
+                    /*background: url('../images/arrow_mega_menu.png') 0 4px no-repeat;*/
+                    &:hover {
+                      padding-left: 0;
+                      text-decoration: none;
+                      color: $pink !important;
+                    }
+                    &:before {
+                      background: $pink;
+                      content: "";
+                      width: 6px;
+                      height: 6px;
+                      display: inline-block;
+                      border-radius: 50%;
+                      margin-right: 8px;
+                    }
+                  }
+                }
+              }
+				.gestisciform {
+					> div {
+						margin-bottom: 10px;
+					}
+					#tipologia_lead_container {
+						display: none;
+					}
+					label {
+						display: block;
+					}
+					input[type="text"],
+					textarea {
+						width: 250px;
+					}
+					textarea {
+						height: 80px;
+					}
+				}
+			}
+
+      @media #{$max-767} {
+        width: 96%;
+        padding: 0 2%;
+      }
+		}
+		.col-left {
+			width: 230px;
+			> div {
+				margin-bottom: 25px;
+			}
+			img,
+			.fourth,
+			.fifth {
+				display: none !important;
+			}
+			h4 {
+				color: $pink;
+				font-size: $font14;
+				padding-bottom: 5px;
+				text-transform: uppercase;
+			}
+			ul {
+				margin-bottom: 20px;
+                background: url('../images/divider.png') bottom repeat-x;
+                padding-bottom: 10px;
+			}
+			li {
+				margin-bottom: 10px;
+				a {
+					font-size: $font12;
+					padding: 0;
+					&:hover, &:visited {
+						background: none;
+					}
+				}
+				&.current {
+					/*background: #{$sprite-global} 210px -116px no-repeat;*/
+                    text-decoration: underline;
+					a {
+						font-family: $opensans-bold;
+						text-decoration: none !important;
+					}
+				}
+			}
+		}
+	}
+}
+.glossary{
+  h1{
+    font-family: $opensans-regular;
+  }
+  .glossary_navigation{
+    background: url('../images/divider.png') bottom repeat-x;
+    margin: 20px 0;
+    padding-bottom: 10px;
+    span{
+      margin: 0 6px;
+      color: $grigio-chiarone;
+      &:first-child{
+        margin-left: 0;
+      }
+      &:last-child{
+        margin-right: 0;
+      }
+      a{
+        font-size: $font18;
+        color: $grigio;
+      }
+    }
+  }
+  .glossary_entry{
+    margin-top: 20px;
+    list-style: none;
+    li{
+      margin: 10px 0;
+      a:before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 8px;
+        background: $pink;
+      }
+    }
+  }
+}
+
+.cms-coming-soon {
+  .main {
+    .col-main {
+      width: auto;
+      .coming-soon {
+        width: 100%;
+        text-align: center;
+        .bg_coming {
+          width: 100%;
+          height: 355px;
+          background: url('../images/bg_coming.jpg') 0 0 no-repeat;
+          margin: 50px auto 20px;
+        }
+
+        p {
+          width: 405px;
+          margin: 0 auto 20px;
+        }
+      }
+    }
+  }
+}

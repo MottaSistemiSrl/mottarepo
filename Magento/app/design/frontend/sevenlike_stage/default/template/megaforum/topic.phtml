@@ -1,0 +1,55 @@
+<h2>Crea un nuovo argomento/discussione</h2><br>
+
+<form id="megaforum-form" enctype="multipart/form-data" method="post" action="<?php echo Mage::getUrl('megaforum/index/save')?>">
+
+<div>
+<label for="title_field"><strong>Nome</strong><span class="required"> * </span></label><br>
+<input id="firstname" class="input-text required-entry" type="text" style="width: 275px;" title="First Name"  name="firstname">
+</div>
+
+<div>
+<label for="title_field"><strong>Cognome</strong><span class="required"> * </span></label><br>
+<input id="lastname" class="input-text required-entry" type="text" style="width: 275px;" title="Last Name" name="lastname">
+</div>
+
+<div>
+<label for="title_field"><strong>Titolo</strong><span class="required"> * </span></label><br>
+<input id="topic_name" class="input-text required-entry" type="text" value="" style="width: 450px;" name="topic_name"></input>
+</div>
+
+<!--<input type="hidden" value="0" name="departments_id"></input>-->
+<div>
+<label for="title_field"><strong>Assign Forum<strong></label><br>
+<select id="forum_id" style="width: 457px;" name="forum_id"><option selected="" value="0">--- Select Forum --- </option>
+<?php
+$forum= Mage::getModel('megaforum/forum')->getCollection();
+foreach($forum as $forums){
+?>
+<option value="<?php echo $forums->getForumId();?>"><?php echo $forums->getForumName(); ?></option>
+<?php
+}
+?>
+</select>
+</div>
+
+
+<div>
+<label for="title_field"><strong>Email</strong><span class="required"> * </span></label><br>
+<input id="email_address" class="input-text required-entry" type="text" style="width: 450px;" title="Email Address"  name="email">
+</div>
+
+<div>
+<label for="content_field"><strong>Descrizione<strong><span class="required">*</span></label><br>
+<textarea id="message" class="required-entry" style="width: 450px;" rows="10" cols="53" name="message"></textarea><br><br>
+</div>
+
+<div class="button-set"><a class="left" href=""></a>
+<button class="button right form-button" type="submit"><span><span>Salva</span></span></button>
+</div>
+</form>
+<script type="text/javascript">
+   //<![CDATA[
+    var dataForm = new VarienForm('megaforum-form', true);
+   //]]>
+ </script>
+

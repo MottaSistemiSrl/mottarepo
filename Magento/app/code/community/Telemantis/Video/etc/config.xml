@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Telemantis_Video>
+            <version>0.1.0</version>
+        </Telemantis_Video>
+    </modules>
+    <global>    
+        <helpers>
+            <video>
+                <class>Telemantis_Video_Helper</class>
+            </video>
+        </helpers> 
+         <models>
+            <video>
+                <class>Telemantis_Video_Model</class>
+            </video>
+        </models>
+    </global>
+    <frontend>
+        <routers>
+            <video>
+                <use>standard</use>
+                <args>
+                    <module>Telemantis_Video</module>
+                    <frontName>video</frontName>
+                </args>
+            </video>
+        </routers>
+       <layout>
+            <updates>
+                <video>
+                    <file>video.xml</file>
+                </video>
+            </updates>
+        </layout>
+		 
+    </frontend>
+    
+     <!-- ... -->
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <video>
+                                            <title>Video Module Section</title>
+                                        </video>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+    <!-- ... -->
+    
+   <default>
+        <video>
+           <video_group>
+                <active>1</active>
+                <width>800</width>
+                <height>800</height>
+                <stretch>fill</stretch>
+           </video_group>
+        </video>
+   </default>
+</config>

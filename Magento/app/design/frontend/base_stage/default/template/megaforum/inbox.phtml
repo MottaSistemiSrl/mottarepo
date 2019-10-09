@@ -1,0 +1,57 @@
+<h2>My Inbox</h2><br>
+
+<div class="box-account box-recent">
+
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $privatemsgCollection = $this->getCollection(); ?>
+<?php echo $this->getPagerHtml(); ?>
+
+<table id="my-orders-table" class="data-table">
+<colgroup>
+<col width="1"></col>
+<col width="1"></col>
+<col width="1"></col>
+<col width="1"></col>
+</colgroup>
+<thead><tr class="first last">
+<th>SUBJECT</th>
+<th>SENT FROM</th>
+<th>SENT DATE</th>
+<th>MANAGE</th>
+
+</tr>
+</thead>
+<tbody>
+
+<!--<?php 	
+$customerData = Mage::getSingleton('customer/session')->getCustomer();
+$customerName = $customerData->getId();
+$privatemsgCollection = Mage::getModel('megaforum/privatemsg')->getCollection()->addFieldToFilter("sent_to",$customerName)->setOrder('privatemsg_id', 'DESC'); 
+?>-->
+
+<?php 
+foreach($privatemsgCollection as $privatemsgCollections)
+{
+$customerData = Mage::getModel('customer/customer')->load($privatemsgCollections->getSentFrom());
+$firstname = $customerData->getFirstname();
+?>
+
+<tr class="first last odd topics" >
+<td><?php echo $privatemsgCollections->getSubject();?> </td>
+<td><?php echo $firstname; ?> </td>
+<td><?php echo $privatemsgCollections->getSentDate();?> </td>
+<td><a href="<?php echo Mage::getUrl('megaforum/index/reply')."id/".$privatemsgCollections->getPrivatemsgId() ?>">Reply</a>&nbsp; | &nbsp;<a href="<?php echo Mage::getUrl('megaforum/index/privatemsgdelete')."id/".$privatemsgCollections->getPrivatemsgId() ?>">Delete</a></td>
+</tr>
+
+<?php } ?>
+
+</tbody>
+</table>
+
+<script type="text/javascript">
+      decorateTable('my-orders-table')
+</script>
+</div>
+
+
+

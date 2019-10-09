@@ -1,0 +1,259 @@
+<div>
+    <h2><?php echo $this->__('My Statistica') ?></h2>
+</div>
+
+<?php 
+
+$resultRequest = $this->productListStatistica(); 
+
+?>
+
+<p>&nbsp;</p>
+<form action="" method="post" name="filterdateform" id="filter_form">
+<div class="field">
+    <div class="input-box">
+        <table border="0"><tr>
+          <td width="100" colspan="2">
+
+        <label for="dob"><strong><?php echo Mage::helper('contacts')->__('Date filter') ?></strong></label>
+
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">
+            From:
+          </td>
+          <td width="250">
+        <input name="_dob" id="_dob" value="<?php echo $resultRequest[0]['filter_from']?>" type="text">
+        <img title="Select date" id="_dob_trig" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'adminhtml/default/default/images/grid-cal.gif'; ?>" class="v-middle">
+
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align:right;">
+            To:
+          </td>
+          <td width="250">
+        <input name="_dobto" id="_dobto" value="<?php echo $resultRequest[0]['filter_to']?>" type="text">
+        <img title="Select date" id="_dobto_trig" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'adminhtml/default/default/images/grid-cal.gif'; ?>" class="v-middle">
+          
+          </td>
+        </tr>
+        <tr>
+          <td>
+
+        <input type="submit" name="filtergo" value="filter">
+
+          </td>
+        </tr></table>
+    </div>
+</div>
+</form><br />
+
+
+<div class="request_table">
+
+<?php echo $this->getPagerHtml(); ?>
+<div class="box-account box-recent">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <th>SKU</th>
+                      <th>Name</th>
+                      <th>Price [USD]</th>
+                      <th>Purchased</th>
+                      <th>Sum [USD]</th>
+                    </tr>
+<?php 
+      if($resultRequest){  
+        $total = 0;
+        foreach($resultRequest as $rt){
+          $prc = split('\.',$rt['price']);
+          $sum = $prc[0]*$rt['count'];
+          $total += $sum;
+       	  echo '<tr class="clicktagtr">
+                    <td>'.$rt['sku'].'</td>
+                    <td>'.substr(strip_tags($rt['name']),0,45).'...</td>
+                    <td>'.$prc[0].'</td>
+                    <td>'.$rt['count'].'</td>                          
+                    <td>'.$sum.'</td>
+                </tr>';
+        }
+      }
+        ///product/index/delete?p='.$rt['entity_id'].'
+?>
+ 				</table>
+</div>
+<?php echo $this->getPagerHtml(); ?>
+
+<p>&nbsp;</p>
+<p align="right" class="total">Total: <strong><?php echo $total; ?></strong> [USD]</p>
+
+</div>
+
+
+<script type="text/javascript">
+//<![CDATA[
+enUS = {"m":{"wide":["January","February","March","April","May","June","July","August","September","October","November","December"],"abbr":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]}}; // en_US locale reference
+Calendar._DN = ["\u0432\u043e\u0441\u043a\u0440\u0435\u0441\u0435\u043d\u044c\u0435","\u043f\u043e\u043d\u0435\u0434\u0435\u043b\u044c\u043d\u0438\u043a","\u0432\u0442\u043e\u0440\u043d\u0438\u043a","\u0441\u0440\u0435\u0434\u0430","\u0447\u0435\u0442\u0432\u0435\u0440\u0433","\u043f\u044f\u0442\u043d\u0438\u0446\u0430","\u0441\u0443\u0431\u0431\u043e\u0442\u0430"]; // full day names
+Calendar._SDN = ["\u0412\u0441","\u041f\u043d","\u0412\u0442","\u0421\u0440","\u0427\u0442","\u041f\u0442","\u0421\u0431"]; // short day names
+Calendar._FD = 1; // First day of the week. "0" means display Sunday first, "1" means display Monday first, etc.
+Calendar._MN = ["\u044f\u043d\u0432\u0430\u0440\u044f","\u0444\u0435\u0432\u0440\u0430\u043b\u044f","\u043c\u0430\u0440\u0442\u0430","\u0430\u043f\u0440\u0435\u043b\u044f","\u043c\u0430\u044f","\u0438\u044e\u043d\u044f","\u0438\u044e\u043b\u044f","\u0430\u0432\u0433\u0443\u0441\u0442\u0430","\u0441\u0435\u043d\u0442\u044f\u0431\u0440\u044f","\u043e\u043a\u0442\u044f\u0431\u0440\u044f","\u043d\u043e\u044f\u0431\u0440\u044f","\u0434\u0435\u043a\u0430\u0431\u0440\u044f"]; // full month names
+Calendar._SMN = ["\u044f\u043d\u0432.","\u0444\u0435\u0432\u0440.","\u043c\u0430\u0440\u0442\u0430","\u0430\u043f\u0440.","\u043c\u0430\u044f","\u0438\u044e\u043d\u044f","\u0438\u044e\u043b\u044f","\u0430\u0432\u0433.","\u0441\u0435\u043d\u0442.","\u043e\u043a\u0442.","\u043d\u043e\u044f\u0431.","\u0434\u0435\u043a."]; // short month names
+Calendar._am = "AM"; // am/pm
+Calendar._pm = "PM";
+
+// tooltips
+Calendar._TT = {};
+Calendar._TT["INFO"] = "About the calendar";
+
+Calendar._TT["ABOUT"] =
+"DHTML Date/Time Selector\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" +
+"For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
+"Distributed under GNU LGPL. See http://gnu.org/licenses/lgpl.html for details." +
+"\n\n" +
+"Date selection:\n" +
+"- Use the \xab, \xbb buttons to select year\n" +
+"- Use the " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " buttons to select month\n" +
+"- Hold mouse button on any of the above buttons for faster selection.";
+Calendar._TT["ABOUT_TIME"] = "\n\n" +
+"Time selection:\n" +
+"- Click on any of the time parts to increase it\n" +
+"- or Shift-click to decrease it\n" +
+"- or click and drag for faster selection.";
+
+Calendar._TT["PREV_YEAR"] = "Prev. year (hold for menu)";
+Calendar._TT["PREV_MONTH"] = "Prev. month (hold for menu)";
+Calendar._TT["GO_TODAY"] = "Go Today";
+Calendar._TT["NEXT_MONTH"] = "Next month (hold for menu)";
+Calendar._TT["NEXT_YEAR"] = "Next year (hold for menu)";
+Calendar._TT["SEL_DATE"] = "Select date";
+Calendar._TT["DRAG_TO_MOVE"] = "Drag to move";
+Calendar._TT["PART_TODAY"] = ' (' + "\u0421\u0435\u0433\u043e\u0434\u043d\u044f" + ')';
+
+// the following is to inform that "%s" is to be the first day of week
+Calendar._TT["DAY_FIRST"] = "Display %s first";
+
+// This may be locale-dependent. It specifies the week-end days, as an array
+// of comma-separated numbers. The numbers are from 0 to 6: 0 means Sunday, 1
+// means Monday, etc.
+Calendar._TT["WEEKEND"] = "0,6";
+
+Calendar._TT["CLOSE"] = "Close";
+Calendar._TT["TODAY"] = "\u0421\u0435\u0433\u043e\u0434\u043d\u044f";
+Calendar._TT["TIME_PART"] = "(Shift-)Click or drag to change value";
+
+// date formats
+Calendar._TT["DEF_DATE_FORMAT"] = "%d.%m.%Y";
+Calendar._TT["TT_DATE_FORMAT"] = "%e %B %Y '\u0433'.";
+
+Calendar._TT["WK"] = "\u041d\u0435\u0434\u0435\u043b\u044f";
+Calendar._TT["TIME"] = "Time:";
+
+CalendarDateObject._LOCAL_TIMZEONE_OFFSET_SECONDS = 10800;
+CalendarDateObject._SERVER_TIMZEONE_SECONDS = 1364818509;
+
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+  Calendar.setup({
+        inputField : '_dob',
+        ifFormat : '%d.%m.%Y',
+        button : '_dob_trig',
+        align : 'Bl',
+        singleClick : true
+    });
+
+  Calendar.setup({
+        inputField : '_dobto',
+        ifFormat : '%d.%m.%Y',
+        button : '_dobto_trig',
+        align : 'Bl',
+        singleClick : true
+    });
+//]]>
+</script>
+
+<style type="text/css">
+.total{
+  font-size:18px;
+}
+
+#generaldiv, #pricediv, #imagediv, #additionalfieldsdiv, #downlodablediv{
+  display:none;
+}
+
+  .headings th{
+    border:1px solid #dddddd;
+    padding:2px;
+    font-weight:bold;
+  }
+  .headings td{
+    border:1px solid #dddddd;
+    padding:2px;
+  }
+          .showcase_attribute{
+            width:160px;
+            float:left; 
+            border:1px solid #dddddd; 
+            padding:5px;
+            background-color:#ffffff;
+          }
+          .showcase_menu{
+            width:150px; 
+            position:relative; 
+            float:right;  
+            padding:5px;
+            overflow-x:scroll;
+            background-color:#ffffff;
+            margin:10px 0 0 0;
+          }
+          .showcase_menu ul{
+            width:250px;
+          }
+          .showcase_menu ul li ul, .showcase_menu ul li ul li ul, .showcase_menu ul li ul li ul li ul{
+            padding-left:10px;
+          }
+          .generalblock{
+            border:1px solid #dddddd;
+          }
+          .titlebg{
+            background-color:#E26703;
+            color:#ffffff;
+            margin:0px;
+            padding:0px 0px 0px 5px;
+            border:1px solid #fff;
+            cursor:pointer;
+          }
+          .fieldbg{
+            padding:0px 0px 10px 5px;
+            margin:0px;
+          }
+          .fieldbg input, .fieldbg textarea{
+            width:98%;
+          }
+
+
+.request_table td, .request_table th{
+  padding:3px;
+}
+.request_table th{
+  font-weight:bold;
+  border-bottom:1px solid #dddddd;
+}
+.request_table td{
+  border-bottom:1px solid #dddddd;
+}
+.request_table table{
+  width:100%;
+}
+.request_new{
+  color:#ff0000;
+}
+.clicktagtr{
+  cursor:pointer;
+}
+</style>

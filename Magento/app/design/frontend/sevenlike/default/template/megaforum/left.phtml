@@ -1,0 +1,36 @@
+
+<div class="recent-topics block block-mostRead">
+    <hr class="separator-x">
+        <h2 class="mostRead"><small>Ultimi</small> Post</h2>
+        <div class="">
+            <?php $postCollection = Mage::getModel('megaforum/post')->getCollection()->setOrder('post_id', 'DESC')->setPageSize(5); ?>
+
+            <ul>
+                <?php foreach ($postCollection as $postCollections) {
+                    $customerName = Mage::getModel('customer/customer')->load($postCollections->getPostedBy());
+                    $topic = Mage::getModel('megaforum/topic')->load($postCollections->getTopicId());
+                    ?>
+                    <li>
+
+                        <div class="det">
+                            <p class="dati dati-topic">
+                                <span>Topic:</span> <?php echo Mage::helper('core/string')->truncate($topic->getTopicName(), 50, "..."); ?></p>
+                            <p class="dati dati-topic">
+                                <?php echo $this->formatDate($postCollections->getPostedAt(), Mage::getStoreConfig('blog/blog/dateformat'), false); ?>
+                                <?php echo $this->__("By"); ?>
+                                <a href="<?php echo Mage::getUrl('megaforum/index/profile')."id/".$customerName->getId() ?>">
+                                    <span><?php echo $customerName->getSevenlikeNickname(); ?></span>
+                                </a>
+                            </p>
+                            <a class="post" href="<?php echo Mage::getUrl('megaforum/index/post') . "id/" . $postCollections->getTopicId() ?>">
+                                <?php echo strip_tags( $text = Mage::helper('core/string')->truncate($postCollections->getPostText(), 60, "...")); ?>
+                            </a>
+                        </div>
+                    </li>
+                <?php
+                }
+                ?>
+            </ul>
+        </div>
+
+</div>

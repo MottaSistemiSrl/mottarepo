@@ -1,0 +1,1269 @@
+<?php
+
+$resultRequest = $this->productList();
+
+$productEdit = $this->getEditProduct();
+
+$pep = split('\.',@$productEdit['price']);
+$price = $pep[0];
+//var_dump($productEdit);
+
+$category_id_hidden = '';
+foreach($productEdit['category_id'] as $k=>$v){
+  $category_id_hidden .= ','.$v;
+}
+
+$customerId = Mage::getSingleton("customer/session")->getCustomer()->getId();
+
+?>
+
+
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/extjs/fix-defer-before.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/prototype/window.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/hash.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/events.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/loader.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/grid.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/tabs.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/form.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/accordion.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/tools.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/uploader.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/product.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/calendar/calendar.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/calendar/calendar-setup.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/extjs/ext-tree.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/extjs/fix-defer.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/extjs/ext-tree-checkbox.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/wysiwyg/tiny_mce/setup.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/variables.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/wysiwyg/widget.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/mage/adminhtml/browser.js"></script>
+<script type="text/javascript" src="<?php echo Mage::getBaseUrl(); ?>js/extjs/fix-defer-before.js"></script>
+<div class="page-title">
+    <h1 style="margin-bottom: 20px;">Le miei creazioni</h1>
+</div>
+
+
+<div class="request_table">
+
+<?php echo $this->getPagerHtml(); ?>
+<div class="box-account box-recent">
+  <table border="0" cellpadding="0" cellspacing="0">
+
+      <?php if (count($resultRequest)){ ?>
+          <tr>
+            <th>Creato il</th>
+            <th>Aggiornato il</th>
+            <th>Nome</th>
+            <th>Azione</th>
+          </tr>
+
+
+            <?php foreach($resultRequest as $rt){
+            $dca = split(' ',$rt['created_at']);
+            $dua = split(' ',$rt['updated_at']);
+            $prc = split('\.',$rt['price']);
+            $sts = ($rt['status']==1?'<span style="color:green;">Enabled</span>':'Disabled');
+
+         	echo '<tr class="clicktagtr">
+                            <td>'.$dca[0].'</td>
+                            <td>'.$dua[0].'</td>
+                            <td>'.substr(strip_tags($rt['name']),0,45).'...</td>
+                            <td><a href="'.Mage::getBaseUrl("link").'product/index/edit?ep='.$rt['entity_id'].'&limit='.$resultRequest[0]['limit'].'&p='.$resultRequest[0]['page'].'">modifica</a> | <a href="javascript:void();" onclick="javascript:sureDelete('.$rt['entity_id'].')">elimina</a></td>
+                          </tr>';
+          }
+
+      ?>
+      <?php } else { ?>
+          <tr >
+              <td colspan="4" >
+                  <p style="margin: 0px 0 40px 0;">Non hai ancora caricato una tua creazione</p>
+              </td>
+          </tr>
+      <?php } ?>
+
+ 				</table>
+    </div>
+  <?php echo $this->getPagerHtml(); ?>
+</div>
+<div style="clear:both;"></div>
+
+  <div class="showcase">
+  <h1 style="margin: 40px 0;">Aggiungi la tua creazione</h1>
+      <form action="" method="post" name="showcaseform" id="product_edit_form" enctype="multipart/form-data">
+           <table width="100%" border="0" cellpadding="2" cellspacing="0">
+            <tr>
+             <td>
+                <input type="hidden" name="set" id="set" value="10"/>
+                <input type="hidden" name="type" value="downloadable" />
+                <div>
+                <div id="generaldiv">
+                  <p class="fieldbg">Dai un nome alla tua creazione*</p>
+                  <p><input type="text" id="product_name" name="product[name]" value="<?php echo @$productEdit['name']; ?>" class="longer" /></p>
+                  <p class="fieldbg">Descrivila con una frase*</p>
+                  <p><textarea id="product_description" name="product[description]" class="longer" ><?php echo @$productEdit['description']; ?></textarea></p>
+                  <p class="fieldbg">Quale materiale hai utlizzato?</p>
+                  <p><textarea id="product_materiale_utilizzato" name="product[materiale_utilizzato]" class="longer" ><?php echo @$productEdit['materiale_utilizzato']; ?></textarea></p>
+                  <p class="fieldbg">Inserisci il codice del cartamodello Burda style</p>
+                  <p><textarea id="product_sku_cartamodello" name="product[sku_cartamodello]" class="longer" ><?php echo @$productEdit['sku_cartamodello']; ?></textarea></p>
+                    <p>Immagini</p>
+                    <input name="MAX_FILE_SIZE" type="hidden" value="2000000" />
+                    <input type="file" id="product_image1" name="fileImage1"/>
+                    <input type="file" id="product_image2" name="fileImage2"/>
+                    <input type="file" id="product_image3" name="fileImage3"/>
+                    <input type="hidden" id="product_sku" name="product[sku]" value="<?php echo @$productEdit['sku'] ? $productEdit['sku'] : 'customer-creation-' . $customerId . '-' . time(); ?>" /></p>
+                  <input type="hidden" name="product[status]" value="1" />
+                  <input type="hidden" name="product[visibility]" value="2" />
+                </div> 
+                <input type="hidden" id="product_price" name="product[price]" value="0" />
+
+
+
+<div id="addnewfields">
+<!--additional fields-->
+</div>
+
+<!--
+**
+**  Downloadable Information
+**
+-->
+
+<script type="text/javascript">
+//<![CDATA[>
+
+var uploaderTemplate = '<div class="no-display" id="[[idName]]-template">' +
+                            '<div id="{{id}}" class="file-row file-row-narrow">' +
+                                '<span class="file-info">' +
+                                    '<span class="file-info-name">{{name}}</span>' +
+                                    ' ' +
+                                    '<span class="file-info-size">({{size}})</span>' +
+                                '</span>' +
+                                '<span class="progress-text"></span>' +
+                                '<div class="clear"></div>' +
+                            '</div>' +
+                        '</div>' +
+                            '<div class="no-display" id="[[idName]]-template-progress">' +
+                            '{{percent}}% {{uploaded}} / {{total}}' +
+                            '</div>';
+
+var fileListTemplate = '<span class="file-info">' +
+                            '<span class="file-info-name">{{name}}</span>' +
+                            ' ' +
+                            '<span class="file-info-size">({{size}})</span>' +
+                        '</span>';
+
+var Downloadable = {
+    uploaderObj : $H({}),
+    objCount : 0,
+    setUploaderObj : function(type, key, obj){
+        if (!this.uploaderObj.get(type)) {
+            this.uploaderObj.set(type, $H({}));
+        }
+        this.uploaderObj.get(type).set(key, obj);
+    },
+    getUploaderObj : function(type, key){
+        try {
+            return this.uploaderObj.get(type).get(key);
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    },
+    unsetUploaderObj : function(type, key){
+        try {
+            this.uploaderObj.get(type).unset(key);
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    },
+    massUploadByType : function(type){
+        try {
+            this.uploaderObj.get(type).each(function(item){
+                container = item.value.container.up('tr');
+                if (container.visible() && !container.hasClassName('no-display')) {
+                    item.value.upload();
+                } else {
+                    Downloadable.unsetUploaderObj(type, item.key);
+                }
+            });
+        } catch (e) {
+            try {
+                console.log(e);
+            } catch (e2) {
+                alert(e.name + '\n' + e.message);
+            }
+        }
+    }
+};
+
+Downloadable.FileUploader = Class.create();
+Downloadable.FileUploader.prototype = {
+    type : null,
+    key : null, //key, identifier of uploader obj
+    elmContainer : null, //insert Flex object and templates to elmContainer
+    fileValueName : null, //name of field of JSON data of saved file
+    fileValue : null,
+    idName : null, //id name of elements for unique uploader
+    uploaderText: uploaderTemplate,
+    uploaderSyntax : /(^|.|\r|\n)(\[\[(\w+)\]\])/,
+    uploaderObj : $H({}),
+    config : null,
+    initialize: function (type, key, elmContainer, fileValueName, fileValue ,idName, config) {
+        this.type = type;
+        this.key = key;
+        this.elmContainer = elmContainer;
+        this.fileValueName = fileValueName;
+        this.fileValue = fileValue;
+        this.idName = idName;
+        this.config = config;
+        uploaderTemplate = new Template(this.uploaderText, this.uploaderSyntax);
+                Element.insert(
+            elmContainer,
+            {'top' : uploaderTemplate.evaluate({
+                    'idName' : this.idName,
+                    'fileValueName' : this.fileValueName,
+                    'uploaderObj' : 'Downloadable.getUploaderObj(\''+this.type+'\', \''+this.key+'\')'
+                })
+            }
+        );
+        if ($(this.idName+'_save')) {
+            $(this.idName+'_save').value = this.fileValue.toJSON
+               ? this.fileValue.toJSON()
+               : Object.toJSON(this.fileValue);
+        }
+        Downloadable.setUploaderObj(
+            this.type,
+            this.key,
+            new Flex.Uploader(this.idName, '<?=Mage::getBaseUrl();?>/skin/adminhtml/default/default/media/uploaderSingle.swf', this.config)
+        );
+        if (varienGlobalEvents) {
+            varienGlobalEvents.attachEventHandler('tabChangeBefore', Downloadable.getUploaderObj(type, key).onContainerHideBefore);
+        }
+        new Downloadable.FileList(this.idName, Downloadable.getUploaderObj(type, key));
+            }
+}
+
+Downloadable.FileList = Class.create();
+Downloadable.FileList.prototype = {
+    file: [],
+    containerId: '',
+    container: null,
+    uploader: null,
+    fileListTemplate: fileListTemplate,
+    templatePattern : /(^|.|\r|\n)({{(\w+)}})/,
+    listTemplate : null,
+    initialize: function (containerId, uploader) {
+        this.containerId  = containerId,
+        this.container = $(this.containerId);
+        this.uploader = uploader;
+        this.uploader.onFilesComplete = this.handleUploadComplete.bind(this);
+        this.file = this.getElement('save').value.evalJSON();
+        this.listTemplate = new Template(this.fileListTemplate, this.templatePattern);
+        this.updateFiles();
+        this.uploader.onFileRemoveAll = this.handleFileRemoveAll.bind(this);
+        this.uploader.onFileSelect = this.handleFileSelect.bind(this);
+    },
+    handleFileRemoveAll: function(fileId) {
+        $(this.containerId+'-new').hide();
+        $(this.containerId+'-old').show();
+    },
+    handleFileSelect: function() {
+        $(this.containerId+'_type').checked = true;
+    },
+    getElement: function (name) {
+        return $(this.containerId + '_' + name);
+    },
+    handleUploadComplete: function (files) {
+        files.each(function(item) {
+           if (!item.response.isJSON()) {
+                try {
+                    console.log(item.response);
+                } catch (e2) {
+                    alert(item.response);
+                }
+               return;
+           }
+           var response = item.response.evalJSON();
+           if (response.error) {
+               return;
+           }
+           var newFile = {};
+           newFile.file = response.file;
+           newFile.name = response.name;
+           newFile.size = response.size;
+           newFile.status = 'new';
+           this.file[0] = newFile;
+           this.uploader.removeFile(item.id);
+        }.bind(this));
+        this.updateFiles();
+    },
+    updateFiles: function() {
+        this.getElement('save').value = this.file.toJSON
+            ? this.file.toJSON()
+            : Object.toJSON(this.file);
+        this.file.each(function(row){
+            row.size = this.uploader.formatSize(row.size);
+            $(this.containerId + '-old').innerHTML = this.listTemplate.evaluate(row);
+            $(this.containerId + '-new').hide();
+            $(this.containerId + '-old').show();
+        }.bind(this));
+    }
+}
+
+var alertAlreadyDisplayed = false;
+
+Validation.addAllThese([
+    ['validate-downloadable-file', 'Please upload a file.', function(v,element) {
+            linkType = element.up(0).down('input[value="file"]');
+            if (linkType.checked && (v == '' || v == '[]')) {
+                newFileContainer = element.up(0).down('div.new-file');
+                if (!alertAlreadyDisplayed && (newFileContainer.empty() || newFileContainer.style.display != 'none')) {
+                    alertAlreadyDisplayed = true;
+                    alert('There are files that were selected but not uploaded yet. Please upload or remove them first');
+                }
+                return false;
+            }
+            return true;
+        }]
+    ]);
+
+Validation.addAllThese([
+    ['validate-downloadable-url', 'Please specify Url.', function(v,element) {
+            linkType = element.up(0).down('input[value="url"]');
+            if (linkType.checked && v == '') {
+                return false;
+            }
+            return true;
+        }]
+    ]);
+//]]>
+</script>
+
+
+<script type="text/javascript">
+
+function hidesampletr(id){
+  document.getElementById('sampletr1'+id).style.display='none';
+  document.getElementById('sampletr2'+id).style.display='none';
+}
+
+//<![CDATA[>
+var sampleTemplate = '<tr id="sampletr1{{sample_id}}">'+
+                        '<td>'+
+                            '<input type="hidden" class="__delete__" name="downloadable[sample][{{id}}][is_delete]" value="" />'+
+                            '<input type="hidden" name="downloadable[sample][{{id}}][sample_id]" value="{{sample_id}}" />'+
+                            '<input type="text" class="required-entry input-text" name="downloadable[sample][{{id}}][title]" value="{{title}}" style="width:380px;" />'+
+                            ''+
+                        '</td>'+
+                        '<td class="a-center"><input type="text" name="downloadable[sample][{{id}}][sort_order]" value="{{sort_order}}" class="input-text sort" style="width:50px;" /></td>'+
+                        '<td>'+
+                            '<button type="button" class="scalable delete icon-btn delete-sample-item" onclick="hidesampletr({{sample_id}});"><span><span><span>Delete</span></span></span></button>'+
+                        '</td>'+
+                    '</tr><tr id="sampletr2{{sample_id}}">'+
+                    '<td colspan="3">'+
+                    '<div class="files-wide">'+
+                                '<div class="row">'+
+                                    '<label for="downloadable_sample_{{id}}_file_type"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_sample_{{id}}_file_type" name="downloadable[sample][{{id}}][type]" value="file"{{file_checked}} /> File:</label>'+
+                                    '<input type="hidden" class="validate-downloadable-file" id="downloadable_sample_{{id}}_file_save" name="downloadable[sample][{{id}}][file]" value="{{file_save}}" />'+
+                                    '<div id="downloadable_sample_{{id}}_file" class="uploader">'+
+                                        '<div id="downloadable_sample_{{id}}_file-old" class="file-row-info"></div>'+
+                                        '<div id="downloadable_sample_{{id}}_file-new" class="file-row-info new-file"></div>'+
+                                        '<div class="buttons">'+
+                                            '<div id="downloadable_sample_{{id}}_file-install-flash" style="display:none">'+
+                                                'This content requires last version of Adobe Flash Player. <a href="http://www.adobe.com/go/getflash/">Get Flash</a>'+
+                                            '</div>'+
+                                        '</div>'+
+                                        '<div class="clear"></div>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="row">'+
+                                    '<label for="downloadable_sample_{{id}}_url_type"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_sample_{{id}}_url_type" name="downloadable[sample][{{id}}][type]" value="url"{{url_checked}} /> URL:</label> <input type="text" class="validate-downloadable-url input-text" name="downloadable[sample][{{id}}][sample_url]" value="{{sample_url}}" style="width:450px;" />'+
+                                '</div>'+
+                                '<div>'+
+                                    '<span id="downloadable_sample_{{id}}_container"></span>'+
+                                '</div>'+
+                            '</div>'+
+                    '<br /><hr style="border:1px dashed #999999;" /><br /></td>'+
+                    '</tr>';
+var sampleItems = {
+    tbody : $('sample_items_body'),
+    templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+    templateText : sampleTemplate,
+    itemCount : 0,
+    add : function(data) {
+        alertAlreadyDisplayed = false;
+        this.template = new Template(this.templateText, this.templateSyntax);
+
+        if(!data.sample_id){
+            data = {};
+            data.sample_type = 'file';
+            data.sample_id  = 0;
+        }
+
+        data.id = this.itemCount;
+
+        if (data.sample_type == 'url') {
+            data.url_checked = ' checked="checked"';
+        } else if (data.sample_type == 'file') {
+            data.file_checked = ' checked="checked"';
+        }
+
+        Element.insert(this.tbody, {'bottom':this.template.evaluate(data)});
+
+        scopeTitle = $('downloadable_sample_'+data.id+'_title');
+        if (scopeTitle) {
+            Event.observe(scopeTitle, 'click', function(event){
+                scopeElm = $(Event.findElement(event, 'input'));
+                titleField = scopeElm.up(0).down('input[type="text"]');
+                if (scopeElm.checked == true) {
+                    titleField.disabled = true;
+                } else {
+                    titleField.disabled = false;
+                }
+            });
+        }
+        if (!data.store_title && scopeTitle) {
+            scopeTitle.up(0).down('input[type="text"]').disabled = true;
+            scopeTitle.checked = true;
+        }
+
+        sampleUrl = $('downloadable_sample_'+data.id+'_url_type');
+
+        if (!data.file_save) {
+            data.file_save = [];
+        }
+        new Downloadable.FileUploader(
+            'samples',
+            data.id,
+            sampleUrl.up('td').down('div.uploader'),
+            'downloadable[sample]['+data.id+']',
+            data.file_save,
+            'downloadable_sample_'+data.id+'_file',
+            {"url":"<?php echo str_replace('/','\/',Mage::getBaseUrl('link')); ?>product\/index\/downloadableupload\/type\/samples\/key\/5f1c87fd0cea69563a4e829ba06b9616\/?SID=16bblj105lu5ir7p2v6arkd3s4","params":{"form_key":"gn0aHDfjLLxXQFGN"},"file_field":"samples","filters":{"all":{"label":"All Files","files":["*.*"]}},"replace_browse_with_remove":true,"width":"32","hide_upload_button":true}        );
+        sampleUrl.advaiceContainer = 'downloadable_sample_'+data.id+'_container';
+        sampleFile = $('downloadable_sample_'+data.id+'_file_type');
+        sampleFile.advaiceContainer = 'downloadable_sample_'+data.id+'_container';
+        $('downloadable_sample_'+data.id+'_file_save').advaiceContainer = 'downloadable_sample_'+data.id+'_container';
+
+        this.itemCount++;
+        this.bindRemoveButtons();
+    },
+    remove : function(event){
+        var element = $(Event.findElement(event, 'tr'));
+        alertAlreadyDisplayed = false;
+        if(element){
+            element.down('input[type="hidden"].__delete__').value = '1';
+            element.down('div.flex').remove();
+            element.addClassName('no-display');
+            element.addClassName('ignore-validate');
+            element.hide();
+        }
+    },
+    bindRemoveButtons : function(){
+        var buttons = $$('tbody#sample_items_body .delete-sample-item');
+        for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.remove.bind(this));
+            }
+        }
+    }
+}
+
+sampleItems.bindRemoveButtons();
+
+if($('add_sample_item')){
+    Event.observe('add_sample_item', 'click', sampleItems.add.bind(sampleItems));
+}
+
+<? if(@$productEdit['sample']){ foreach($productEdit['sample'] as $psl){ ?>
+
+sampleItems.add({"sample_id":"<?php echo $psl['sample_id']; ?>","title":"<?php echo $psl['title']; ?>","sample_url":<?php echo (isset($psl['sample_url'])?'"'.str_replace('/','\/',$psl['sample_url']).'"':'null'); ?>,"sample_type":"<?php echo $psl['sample_type']; ?>","sort_order":"<?php echo $psl['sort_order']; ?>","file_save":[{"file":"<?php echo str_replace('/','\/',$psl['sample_file']); ?>","name":"<?php echo str_replace('/a/l/','',$psl['sample_file']); ?>","size":<?php echo filesize(Mage_Downloadable_Model_Sample::getBasePath().$psl['sample_file']); ?>,"status":"old"}],"store_title":"<?php echo $psl['title']; ?>"});
+
+<? }} ?>
+
+//]]>
+</script>
+</dd>
+
+
+</div>
+
+<script type="text/javascript">
+
+
+function hidelinkstr(id){
+  document.getElementById('linkstr1'+id).style.display='none';
+  document.getElementById('linkstr2'+id).style.display='none';
+  document.getElementById('linkstr3'+id).style.display='none';
+}
+
+//<![CDATA[
+var linkTemplate = '<tr id="linkstr1{{link_id}}">'+
+        '<td>'+
+        '<input type="hidden" class="__delete__" name="downloadable[link][{{id}}][is_delete]" value="" />'+
+        '<input type="hidden" name="downloadable[link][{{id}}][link_id]" value="{{link_id}}" />'+
+        '<input type="text" class="required-entry input-text" name="downloadable[link][{{id}}][title]" value="{{title}}" style="width:250px;" />'+
+        ''+
+    '</td>'+
+    '<td class="a-center">'+
+        '<select id="downloadable_link _{{id}}_shareable" name="downloadable[link][{{id}}][is_shareable]">'+
+            '<option value="1">Yes</option>'+
+            '<option value="0">No</option>'+
+            '<option value="2" selected="selected">Use config</option>'+
+        '</select>'+
+    '</td>'+
+        '<input type="hidden" id="downloadable_link_{{id}}_price_value" class="input-text validate-number link-prices" name="downloadable[link][{{id}}][price]" value="0.00" /> ' +
+        '<td><input type="text" id="downloadable_link_{{id}}_downloads" name="downloadable[link][{{id}}][number_of_downloads]" class="input-text downloads" value="{{number_of_downloads}}" style="width:70px;" />'+
+    '<p><input type="checkbox" class="checkbox" id="downloadable_link_{{id}}_is_unlimited" name="downloadable[link][{{id}}][is_unlimited]" value="1" {{is_unlimited}} /> <label>Unlimited</label></p></td>'+
+    '<td class="a-center"><input type="text" name="downloadable[link][{{id}}][sort_order]" value="{{sort_order}}" class="input-text sort" style="width:30px;" /></td>'+
+    '<td>'+
+        '<button id="downloadable_link_{{id}}_delete_button" type="button" class="scalable delete icon-btn delete-link-item" onclick="hidelinkstr({{link_id}});"><span><span><span>Delete</span></span></span></button>'+
+    '</td>'+
+'</tr><tr id="linkstr2{{link_id}}">'+
+'<td colspan="6">'+
+        '<div><strong>Sample:</strong></div>'+
+        '<div class="files">'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_sample_file_type"><input type="radio" class="radio" id="downloadable_link_{{id}}_sample_file_type" name="downloadable[link][{{id}}][sample][type]" value="file"{{sample_file_checked}} /> File:</label>'+
+                '<input type="hidden" id="downloadable_link_{{id}}_sample_file_save" name="downloadable[link][{{id}}][sample][file]" value="{{sample_file_save}}" />'+
+                '<div id="downloadable_link_{{id}}_sample_file" class="uploader">'+
+                    '<div id="downloadable_link_{{id}}_sample_file-old" class="file-row-info"></div>'+
+                    '<div id="downloadable_link_{{id}}_sample_file-new" class="file-row-info"></div>'+
+                    '<div class="buttons">'+
+                        '<div id="downloadable_link_{{id}}_sample_file-install-flash" style="display:none">'+
+                            'This content requires last version of Adobe Flash Player. <a href="http://www.adobe.com/go/getflash/">Get Flash</a>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="clear"></div>'+
+                '</div>'+
+            '</div>'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_sample_url_type"><input type="radio" class="radio" id="downloadable_link_{{id}}_sample_url_type" name="downloadable[link][{{id}}][sample][type]" value="url"{{sample_url_checked}} /> URL:</label><input type="text" class="input-text" name="downloadable[link][{{id}}][sample][url]" value="{{sample_url}}" style="width:450px;" />'+
+            '</div>'+
+            '<div>'+
+                '<span id="downloadable_link_{{id}}_sample_container"></span>'+
+            '</div>'+
+        '</div><br />'+
+    '</td>'+
+'</tr><tr id="linkstr3{{link_id}}">'+
+'<td colspan="6">'+
+        '<div><strong>File:</strong></div>'+
+        '<div class="files">'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_file_type"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_link_{{id}}_file_type" name="downloadable[link][{{id}}][type]" value="file"{{file_checked}} /> File:</label>'+
+            '<input type="hidden" class="validate-downloadable-file" id="downloadable_link_{{id}}_file_save" name="downloadable[link][{{id}}][file]" value="{{file_save}}" />'+
+                '<div id="downloadable_link_{{id}}_file" class="uploader">'+
+                    '<div id="downloadable_link_{{id}}_file-old" class="file-row-info"></div>'+
+                    '<div id="downloadable_link_{{id}}_file-new" class="file-row-info new-file"></div>'+
+                    '<div class="buttons">'+
+                        '<div id="downloadable_link_{{id}}_file-install-flash" style="display:none">'+
+                            'This content requires last version of Adobe Flash Player. <a href="http://www.adobe.com/go/getflash/">Get Flash</a>'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="clear"></div>'+
+                '</div>'+
+            '</div>'+
+            '<div class="row">'+
+                '<label for="downloadable_link_{{id}}_url_type"><input type="radio" class="radio validate-one-required-by-name" id="downloadable_link_{{id}}_url_type" name="downloadable[link][{{id}}][type]" value="url"{{url_checked}} /> URL:</label><input type="text" class="validate-downloadable-url input-text" name="downloadable[link][{{id}}][link_url]" value="{{link_url}}" style="width:450px;" />'+
+            '</div>'+
+            '<div>'+
+                '<span id="downloadable_link_{{id}}_link_container"></span>'+
+            '</div>'+
+        '</div><br /><hr style="border:1px dashed #999999;" /><br />'+
+    '</td>'+
+'</tr>';
+
+var linkItems = {
+    tbody : $('link_items_body'),
+    templateSyntax : /(^|.|\r|\n)({{(\w+)}})/,
+    templateText : linkTemplate,
+    itemCount : 0,
+    add : function(data) {
+        alertAlreadyDisplayed = false;
+        this.template = new Template(this.templateText, this.templateSyntax);
+
+        if(!data.link_id){
+            data = {};
+            data.link_id  = 0;
+            data.link_type = 'file';
+            data.sample_type = 'none';
+            data.number_of_downloads = '0';
+        }
+
+        data.id = this.itemCount;
+
+        if (data.link_type == 'url') {
+            data.url_checked = ' checked="checked"';
+        } else if (data.link_type == 'file') {
+            data.file_checked = ' checked="checked"';
+        }
+        if (data.sample_type == 'url') {
+            data.sample_url_checked = ' checked="checked"';
+        } else if (data.sample_type == 'file') {
+            data.sample_file_checked = ' checked="checked"';
+        }
+
+        Element.insert(this.tbody, {'bottom':this.template.evaluate(data)});
+
+        scopeTitle = $('downloadable_link_'+data.id+'_title');
+        if (scopeTitle) {
+            Event.observe(scopeTitle, 'click', function(event){
+                scopeElm = $(Event.findElement(event, 'input'));
+                titleField = scopeElm.up(0).down('input[type="text"]');
+                if (scopeElm.checked == true) {
+                    titleField.disabled = true;
+                } else {
+                    titleField.disabled = false;
+                }
+            });
+        }
+        if (!data.store_title && scopeTitle) {
+            scopeTitle.up(0).down('input[type="text"]').disabled = true;
+            scopeTitle.checked = true;
+        }
+
+        scopePrice = $('downloadable_link_'+data.id+'_price');
+        if (scopePrice) {
+            Event.observe(scopePrice, 'click', function(event){
+                scopeElm = $(Event.findElement(event, 'input'));
+                priceField = scopeElm.up(0).down('input[type="text"]');
+                if (scopeElm.checked == true) {
+                    priceField.disabled = true;
+                } else {
+                    priceField.disabled = false;
+                }
+            });
+        }
+        if (!data.website_price && scopePrice) {
+            scopePrice.up(0).down('input[type="text"]').disabled = true;
+            scopePrice.checked = true;
+        }
+        downloadsElm = $('downloadable_link_'+data.id+'_downloads');
+        isUnlimitedElm = $('downloadable_link_'+data.id+'_is_unlimited');
+        if (data.is_unlimited) {
+            downloadsElm.disabled = true;
+        }
+        Event.observe(isUnlimitedElm, 'click', function(event){
+            elm = Event.element(event);
+            elm.up('td').down('input[type="text"].downloads').disabled = elm.checked;
+        });
+
+        if (data.is_shareable) {
+            options = $('downloadable_link _'+data.id+'_shareable').options;
+            for (var i=0; i < options.length; i++) {
+                if (options[i].value == data.is_shareable) {
+                    options[i].selected = true;
+                }
+            }
+        }
+
+        sampleUrl = $('downloadable_link_'+data.id+'_sample_url_type');
+        linkUrl = $('downloadable_link_'+data.id+'_url_type');
+
+        if (!data.file_save) {
+            data.file_save = [];
+        }
+        if (!data.sample_file_save) {
+            data.sample_file_save = [];
+        }
+
+        // link sample file
+        new Downloadable.FileUploader(
+            'linkssample',
+            'linkssample_'+data.id,
+            sampleUrl.up('td'),
+            'downloadable[link]['+data.id+'][sample]',
+            data.sample_file_save,
+            'downloadable_link_'+data.id+'_sample_file',
+            {"url":"<?php echo str_replace('/','\/',Mage::getBaseUrl('link')); ?>product\/index\/downloadableupload\/type\/link_samples\/key\/5f1c87fd0cea69563a4e829ba06b9616\/?SID=16bblj105lu5ir7p2v6arkd3s4","params":{"form_key":"gn0aHDfjLLxXQFGN"},"file_field":"link_samples","filters":{"all":{"label":"All Files","files":["*.*"]}},"replace_browse_with_remove":true,"width":"32","hide_upload_button":true}        );
+        // link file
+        new Downloadable.FileUploader(
+            'links',
+            'links_'+data.id,
+            linkUrl.up('td'),
+            'downloadable[link]['+data.id+']',
+            data.file_save,
+            'downloadable_link_'+data.id+'_file',
+            {"url":"<?php echo str_replace('/','\/',Mage::getBaseUrl('link')); ?>product\/index\/downloadableupload\/type\/links\/key\/5f1c87fd0cea69563a4e829ba06b9616\/?SID=16bblj105lu5ir7p2v6arkd3s4","params":{"form_key":"gn0aHDfjLLxXQFGN"},"file_field":"links","filters":{"all":{"label":"All Files","files":["*.*"]}},"replace_browse_with_remove":true,"width":"32","hide_upload_button":true}        );
+
+        linkFile = $('downloadable_link_'+data.id+'_file_type');
+        linkFile.advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
+        linkUrl.advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
+        $('downloadable_link_'+data.id+'_file_save').advaiceContainer = 'downloadable_link_'+data.id+'_link_container';
+
+        sampleFile = $('downloadable_link_'+data.id+'_sample_file_type');
+
+        this.itemCount++;
+        this.togglePriceFields();
+        this.bindRemoveButtons();
+    },
+    remove : function(event){
+        var element = $(Event.findElement(event, 'tr'));
+        alertAlreadyDisplayed = false;
+        if(element){
+            element.down('input[type="hidden"].__delete__').value = '1';
+            Element.select(element, 'div.flex').each(function(elm){
+                elm.remove();
+            });
+            element.addClassName('no-display');
+            element.addClassName('ignore-validate');
+            element.hide();
+        }
+    },
+    bindRemoveButtons : function(){
+        var buttons = $$('tbody#link_items_body .delete-link-item');
+        for(var i=0;i<buttons.length;i++){
+            if(!$(buttons[i]).binded && !$(buttons[i]).hasClassName('disabled')){
+                $(buttons[i]).binded = true;
+                Event.observe(buttons[i], 'click', this.remove.bind(this));
+            }
+        }
+    },
+    togglePriceFields : function(){
+        var toogleTo = $('downloadable_link_purchase_type').value;
+        var disableFlag = true;
+        if (toogleTo == '1') {
+            disableFlag = false;
+        }
+        $$('.link-prices[type="text"]').each(function(elm){
+            var flag = disableFlag;
+            if (elm.hasClassName('disabled')) {
+                flag = true;
+            }
+            elm.disabled = flag;
+        });
+    }
+}
+
+linkItems.bindRemoveButtons();
+
+if ($('downloadable_link_purchase_type')) {
+    Event.observe('downloadable_link_purchase_type', 'change', linkItems.togglePriceFields.bind());
+}
+
+if($('add_link_item')) {
+    Event.observe('add_link_item', 'click', linkItems.add.bind(linkItems));
+}
+
+
+<? if(@$productEdit['links']){ foreach($productEdit['links'] as $pls){ ?>
+
+    linkItems.add({"link_id":"<?php echo $pls['link_id']; ?>","title":"<?php echo $pls['title']; ?>","price":"0.00","number_of_downloads":"<?php echo $pls['number_of_downloads']; ?>","is_shareable":"<?php echo $pls['is_shareable']; ?>","link_url":<?php echo (isset($pls['link_url'])?'"'.str_replace('/','\/',$pls['link_url']).'"':'null'); ?>,"link_type":"<?php echo $pls['link_type']; ?>","sample_file":<?php echo (isset($pls['sample_file'])?'"'.str_replace('/','\/',$pls['sample_file']).'"':'null'); ?>,"sample_url":<?php echo (isset($pls['sample_url'])?'"'.str_replace('/','\/',$pls['sample_url']).'"':'null'); ?>,"sample_type":<?php echo (isset($pls['sample_type'])?'"'.$pls['sample_type'].'"':'null'); ?>,"sort_order":"<?php echo $pls['sort_order']; ?>","file_save":[{"file":"<?php echo str_replace('/','\/',$pls['link_file']); ?>","name":"<a href=\"<?php echo str_replace('/','\/',Mage::getBaseUrl('link')); ?>product\/index\/link\/id\/<?php echo $pls['link_id']; ?>\/key\/4d47168280e41d1930f20275b43842dc\/\"><?php echo str_replace('/a/l/','',$pls['link_file']); ?><\/a>","size":<?php echo filesize(Mage_Downloadable_Model_Link::getBasePath().$pls['link_file']); ?>,"status":"old"}],"sample_file_save":[{"file":"<?php echo str_replace('/','\/',$pls['sample_file']); ?>","name":"<?php echo str_replace('/a/l/','',$pls['sample_file']); ?>","size":<?php echo filesize(Mage_Downloadable_Model_Link::getBaseSamplePath().$pls['sample_file']); ?>,"status":"old"}],"is_unlimited":" checked=\"checked\""});
+
+<? }} ?>
+
+Validation.addAllThese([
+    ['validate-downloadable-link-sample-file', 'Please specify File.', function(v,element) {
+            fileSaveElm = element.up('div').next('input[type="hidden"]');
+            if (element.checked && (fileSaveElm.value == '' || fileSaveElm.value == '[]')) {
+                return false;
+            }
+            return true;
+        }]
+    ]);
+Validation.addAllThese([
+    ['validate-downloadable-link-sample-url', 'Please specify Sample URL.', function(v,element) {
+            if (element.checked && element.up('p').down('input[type="text"]').value == '') {
+                return false;
+            }
+            return true;
+        }]
+    ]);
+//]]>
+</script>
+</dd></dl>
+<script type="text/javascript">
+    tab_content_downloadableInfoAccordionJs = new varienAccordion('tab_content_downloadableInfo', '');
+</script>
+</div>
+<div style="display:none">
+    <div id="custom-advice-container"></div>
+</div>
+<!--
+<div><input type="hidden" name="affect_downloadable_information" value="1" /></div>
+-->
+</div>
+  <!-- downloadable -->
+
+</div>
+
+
+<p>&nbsp;</p>
+
+
+
+<!--
+**
+**  hidden
+**
+-->
+                <input type="hidden" name="product[tax_class_id]" value="0" />
+                <input type="hidden" name="product[custom_design]" value="" />
+                <input type="hidden" name="product[page_layout]" value="one_column" />
+                <input type="hidden" name="product[options_container]" value="container2" />
+
+                <input type="hidden" name="product[use_config_gift_message_available]" value="1" />
+                <input type="hidden" name="product[stock_data][use_config_min_sale_qty]" value="1" />
+                <input type="hidden" name="product[stock_data][use_config_manage_stock]" value="1" />
+                <input type="hidden" name="product[stock_data][use_config_max_sale_qty]" value="1" />
+                <input type="hidden" name="product[stock_data][use_config_notify_stock_qty]" value="1" />
+                <input type="hidden" name="product[stock_data][use_config_enable_qty_increments]" value="1" />
+                <input type="hidden" name="product[website_ids][]" value="1" />
+
+
+                <input type="hidden" name="category_ids" id="category_ids" value="27">
+
+<?php if($productEdit){ ?>
+                <input type="hidden" value="<?php echo @$productEdit['entity_id']; ?>" name="id">
+<?php } ?>
+
+            <p align="center">
+              <button class="button btn-blue" id="showcaseformsavebutton" onclick="showcaseformpresubmit(); return false;" type="button" title="Save">
+                <span>Aggiungi Creazione</span>
+              </button>
+            </p>
+
+              </div>
+
+              </td></tr>
+</table>
+            </form>
+
+         </div>
+
+
+
+<!--
+**
+**  Javascript
+**
+-->
+<script type="text/javascript">
+
+function showcaseformpresubmit(){
+  var err = 0;
+  if(document.getElementById('product_name').value==''){ err = 1; }else
+  if(document.getElementById('product_description').value==''){ err = 2; }else
+  if(document.getElementById('product_sku').value==''){ err = 4; }else
+  if(document.getElementById('product_price').value==''){ err = 5; }
+
+  if(err){
+    switch(err){
+      case 1:
+        alert("Name field is not set");
+        break;
+      case 2:
+        alert("Description field is not set");
+        break;
+      case 3:
+        alert("Short description field is not set");
+        break;
+      case 4:
+        alert("SKU field is not set");
+        break;
+      case 5:
+        alert("Price field is not set");
+        break;
+      default:
+        alert("Javascript Error");
+        break;
+    }
+    err = 0;
+    return false;
+  }else{
+    document.forms['showcaseform'].submit();
+  }
+}
+
+/*
+**
+**  for my additional attributes ... Ajax
+**
+*/
+
+function getSetSelectAttribute(){
+  var FORM_KEY = 'gn0aHDfjLLxXQFGN';
+  var mydiv = document.getElementById('addnewfields');
+  mydiv.innerHTML = "";
+
+  new Ajax.Request('<?=Mage::getBaseUrl("link");?>product/index/additionalfields', {
+    method:'get',
+    parameters: {setp: document.getElementById("set").value, entid: <?php echo (@$productEdit['entity_id']>0?@$productEdit['entity_id']:0); ?>, form_key: FORM_KEY},
+    onSuccess: function(transport) {
+      var response = transport.responseText || "no response text";
+      //alert("Success! \n\n" + response);
+      var obja = JSON.parse(response);
+      for(var jr=0; jr<obja.attributes.length; jr++){
+      if(obja.attributes[jr].attribute_id.length>0){
+        var newdiv = document.createElement('div');
+        newdiv.setAttribute('class','block-title');
+        newdiv.setAttribute('id','af-title'+obja.attributes[jr].group_id);
+        newdiv.setAttribute('onclick',"showdiv('af-div"+obja.attributes[jr].group_id+"');");
+        var newstrong = document.createElement('strong');
+        var newtext=document.createTextNode(obja.attributes[jr].group_name);
+        mydiv.appendChild(newdiv);
+        newdiv.appendChild(newstrong);
+        newstrong.appendChild(newtext);
+
+        var newdiv2 = document.createElement('div');
+        newdiv2.setAttribute('id','af-div'+obja.attributes[jr].group_id);
+        mydiv.appendChild(newdiv2);
+        for(var rt=0; rt<obja.attributes[jr].attribute_id.length;rt++){
+          var newp = document.createElement('p');
+          var newstrong2 = document.createElement('strong');
+          newdiv2.appendChild(newp);
+          newp.appendChild(newstrong2);
+          var newtext2=document.createTextNode(obja.attributes[jr].attribute_id[rt].label);
+          newstrong2.appendChild(newtext2);
+          if(obja.attributes[jr].attribute_id[rt].type=="text" && obja.attributes[jr].attribute_id[rt].input=="textarea"){
+            var newstextarea = document.createElement('textarea');
+            newstextarea.setAttribute('name','product['+obja.attributes[jr].attribute_id[rt].code+']');
+            newdiv2.appendChild(newstextarea);
+            var newtext3=document.createTextNode(obja.attributes[jr].attribute_id[rt].value);
+            newstextarea.appendChild(newtext3);
+          }
+          if(obja.attributes[jr].attribute_id[rt].type=="varchar" && obja.attributes[jr].attribute_id[rt].input=="text"){
+            var newstextarea = document.createElement('input');
+            newstextarea.setAttribute('type','text');
+            newstextarea.setAttribute('name','product['+obja.attributes[jr].attribute_id[rt].code+']');
+            newstextarea.setAttribute('value',obja.attributes[jr].attribute_id[rt].value);
+            newdiv2.appendChild(newstextarea);
+          }
+          if(obja.attributes[jr].attribute_id[rt].type=="int" && obja.attributes[jr].attribute_id[rt].input=="boolean"){
+            var newsboolean = document.createElement('select');
+            newsboolean.setAttribute('id',obja.attributes[jr].attribute_id[rt].code);
+            newsboolean.setAttribute('name','product['+obja.attributes[jr].attribute_id[rt].code+']');
+            newdiv2.appendChild(newsboolean);
+            for(var ib=0; ib<2; ib++){
+              var newsoption = document.createElement('option');
+              newsoption.setAttribute('value',ib);
+              if(obja.attributes[jr].attribute_id[rt].value==ib){
+                newsoption.setAttribute('selected','selected');
+              }
+              newsboolean.appendChild(newsoption);
+              if(ib==0){
+                var newsoptiontext=document.createTextNode("No");
+              }else{
+                var newsoptiontext=document.createTextNode("Yes");
+              }
+              newsoption.appendChild(newsoptiontext);
+            }
+          }
+
+        }
+
+        var newstyle = document.createElement('style');
+        var newtextstyle=document.createTextNode("#af-div"+obja.attributes[jr].group_id+" { display:none; } #af-div"+obja.attributes[jr].group_id+" p{ margin:0px; } #af-div"+obja.attributes[jr].group_id+" textarea, #af-div"+obja.attributes[jr].group_id+" input{ width:98%; }");
+        mydiv.appendChild(newstyle);
+        newstyle.appendChild(newtextstyle);
+      }
+    }
+    },
+    onFailure: function() { alert('Javascript Error'); }
+  });
+
+  //alert(document.getElementById("set").value);
+}
+
+getSetSelectAttribute();
+
+/*
+**
+**  for blocks ... show/hide
+**
+*/
+
+function showdiv(id){
+  var dform = document.getElementById(id).style.display;
+  if(dform){
+    if(dform=='none'){
+      document.getElementById(id).style.display='block';
+    }else{
+      document.getElementById(id).style.display='none';
+    }
+  }else{
+    document.getElementById(id).style.display='block';
+  }
+}
+
+
+/*
+**
+**  for set json images block
+**
+*/
+
+function setArrSave(){
+//alert(save.length + ' --- ' + save[1].url);
+  var arr_save = '[';
+
+  for(var i=0; i<save.length; i++){
+      save[i].toString = function() {
+       return '{"value_id":"' + this.value_id + '", "file":"' + this.file + '", "label":"' + this.label + '", "position":"' + this.position + '", "disabled":"' + this.disabled + '", "label_default":"' + this.label_default + '", "position_default":"' + this.position_default + '", "disabled_default":"' + this.disabled_default + '", "url":"' + this.url + '", "removed":"' + this.removed + '"}';
+     }
+
+     if(i>0){
+      arr_save += ',' + save[i].toString();
+    }else{
+      arr_save += save[i].toString();
+    }
+  }
+
+  arr_save += ']';
+
+  return arr_save;
+}
+
+document.getElementById('media_gallery_content_save').value = setArrSave();
+
+
+/*
+**
+**  for Exclude
+**
+*/
+function changeExclude(value_id){
+
+  for(var i=0; i<save.length; i++){
+
+    if(save[i].value_id==value_id){
+      if(save[i].disabled=="0"){
+        save[i].disabled="1";
+      }else{
+        save[i].disabled="0";
+      }
+    }
+
+  }
+
+  document.getElementById('media_gallery_content_save').value = setArrSave();
+
+}
+
+/*
+**
+**  for Remove
+**
+*/
+function changeRemove(value_id){
+
+  for(var i=0; i<save.length; i++){
+
+    if(save[i].value_id==value_id){
+      if(save[i].removed=="0"){
+        save[i].removed="1";
+      }else{
+        save[i].removed="0";
+      }
+    }
+
+  }
+
+  document.getElementById('media_gallery_content_save').value = setArrSave();
+
+}
+
+/*
+**
+**  for Position
+**
+*/
+function changePosition(value_id){
+
+  for(var i=0; i<save.length; i++){
+
+    if(save[i].value_id==value_id){
+      save[i].position=document.getElementById('position_' + value_id).value;
+    }
+
+  }
+
+  document.getElementById('media_gallery_content_save').value = setArrSave();
+
+}
+
+/*
+**
+**  for Label
+**
+*/
+function changeLabel(value_id){
+
+  for(var i=0; i<save.length; i++){
+
+    if(save[i].value_id==value_id){
+      save[i].label=document.getElementById('label_' + value_id).value;
+    }
+
+  }
+
+  document.getElementById('media_gallery_content_save').value = setArrSave();
+
+}
+
+
+
+/*
+**
+**  for json images
+**
+*/
+
+var save_image = {
+    "image":"<?php echo $productEdit['image_radio']; ?>",
+    "small_image":"<?php echo $productEdit['small_image_radio']; ?>",
+    "thumbnail":"<?php echo $productEdit['thumb_image_radio']; ?>"
+  };
+
+save_image.toString = function() {
+   return '{"image":"' + this.image.replace(/\//g,"\\\/") + '", "small_image":"' + this.small_image.replace(/\//g,"\\\/") + '", "thumbnail":"' + this.thumbnail.replace(/\//g,"\\\/") + '"}';
+ }
+
+document.getElementById('media_gallery_content_save_image').value = save_image.toString();
+
+function setImageProduct(alias){
+  //alert(alias);
+  save_image.image = alias;
+  document.getElementById('media_gallery_content_save_image').value = save_image.toString();
+}
+
+function setSmallImageProduct(alias){
+  //alert(alias);
+  save_image.small_image = alias;
+  document.getElementById('media_gallery_content_save_image').value = save_image.toString();
+}
+
+function setThumbnailProduct(alias){
+  //alert(alias);
+  save_image.thumbnail = alias;
+  document.getElementById('media_gallery_content_save_image').value = save_image.toString();
+}
+
+
+
+
+/*
+**
+**  for category check
+**
+*/
+function categorytree(id){
+    var t = ","+id;
+    var c = document.getElementById("category_ids").value;
+    var pos = c.indexOf(t);
+  if(document.getElementById("checkcat"+id).checked==true){
+    if( pos == -1 ){
+      c += t;
+    }
+  }else{
+    c = c.replace(t,"");
+  }
+  document.getElementById("category_ids").value = c;
+}
+
+/*
+**
+**  for confirm delete
+**
+*/
+function sureDelete(id){
+  if (confirm("The record will be deleted. Are you sure?")) {
+    location = "<?=Mage::getBaseUrl('link');?>product/index/delete?p=" + id;
+  }
+}
+
+/*
+**
+**  for new product
+**
+*/
+function newproduct(){
+  location.href='<?=Mage::getBaseUrl("link");?>product';
+}
+
+</script>
+
+<!--
+**
+**  for block images ... read gallery
+**
+-->
+<script type="text/javascript">
+//<![CDATA[
+var media_gallery_contentJsObject = new Product.Gallery('media_gallery_content', id_2ae1264f5c19e1db1580e98f51ec3175_UploaderJsObject, {"image":{"label":"Base Image ","field":"product[image]"},"small_image":{"label":"Small Image ","field":"product[small_image]"},"thumbnail":{"label":"Thumbnail ","field":"product[thumbnail]"}});
+
+//setInterval(function(){
+ // console.log("JSON : %1", media_gallery_contentJsObject.images.url);
+//}, 5000);
+//]]>
+</script>
+
+
+<style type="text/css">
+.total{
+  font-size:18px;
+}
+
+  .headings th{
+    border:1px solid #dddddd;
+    padding:2px;
+    font-weight:bold;
+  }
+  .headings td{
+    border:1px solid #dddddd;
+    padding:2px;
+  }
+          .showcase_attribute{
+            width:160px;
+            float:left;
+            border:1px solid #dddddd;
+            padding:5px;
+            background-color:#ffffff;
+          }
+          .showcase_menu{
+            width:150px;
+            position:relative;
+            float:right;
+            padding:5px;
+            overflow-x:scroll;
+            background-color:#ffffff;
+            margin:10px 0 0 0;
+          }
+          .showcase_menu ul{
+            width:250px;
+          }
+          .showcase_menu ul li ul, .showcase_menu ul li ul li ul, .showcase_menu ul li ul li ul li ul{
+            padding-left:10px;
+          }
+          .generalblock{
+            border:1px solid #dddddd;
+          }
+          .titlebg{
+            background-color:#E26703;
+            color:#ffffff;
+            margin:0px;
+            padding:0px 0px 0px 5px;
+            border:1px solid #fff;
+            cursor:pointer;
+          }
+          .block-title{
+            cursor:pointer;
+          }
+          .fieldbg{
+            padding:0px 0px 10px 5px;
+            margin:0px;
+          }
+          .fieldbg input, .fieldbg textarea{
+            width:98%;
+          }
+</style>

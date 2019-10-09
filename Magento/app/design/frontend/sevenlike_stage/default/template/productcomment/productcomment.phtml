@@ -1,0 +1,88 @@
+
+<?php
+
+$product_id = Mage::registry('current_product')->getId();
+$obj = Mage::getModel('catalog/product');
+$product = $obj->load($product_id);
+$url = $product->getProductUrl();
+?>
+<?php $loginurl = $url."?login=1"?>
+
+<?php
+$productcommentCollection = Mage::getModel('productcomment/productcomment')->getCollection()->addFieldToFilter('product_id',$product_id)->setOrder('created_at','desc');
+?>
+
+<?php
+foreach($productcommentCollection as $productcomment): ?>
+
+<div class="commentWrapper">
+    <div class="commentDetails">
+        <div class="img">
+
+            <?php
+                $customer = Mage::getModel("customer/customer")->load($productcomment['customer_id']);
+            ?>
+            <?php if($customer->getSevenlikeImage()) $img = $this->getUrl('media/customer') . substr($customer->getSevenlikeImage(), 1); else $img = $this->getSkinUrl('images/blog/avatar.png'); ?>
+            <img src="<?= $img ?>" width="50" height="50">
+        </div>
+        <div class="det">
+            <h4 class="username">
+                <a href="<?php echo Mage::getUrl('megaforum/index/profile')."id/".$customer->getId() ?>">
+                    <?php echo $customer->getSevenlikeNickname(); ?>
+                </a>
+            </h4>
+            <?php
+            $date = $productcomment['created_at'];
+            echo date('F d, Y ', strtotime($date));
+            ?>
+        </div>
+
+    </div>
+    <div class="commentContent">
+        <?php echo $productcomment['product_comment']; ?>
+    </div>
+</div>
+<?php endforeach;?>
+
+<?php if (Mage::getSingleton("customer/session")->isLoggedIn()): ?>
+    <?php Mage::getSingleton('customer/session')->unsetData('product_url',$loginurl);?>
+
+<?php else:?>
+    <?php Mage::getSingleton('customer/session')->setData('product_url',$loginurl) ?>
+    <div class="commentWrapper first">
+        <div class="right">
+            <p class="comm-accedi">Vuoi commentare questa creazione?</p>
+
+            <button class="button btn-login" onclick="location.href='<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB)?>customer/account/login/'">
+                <span><span>Accedi</span></span>
+            </button>
+        </div>
+    </div>
+
+
+<?php endif;?>
+
+
+<?php
+if (Mage::getSingleton("customer/session")->isLoggedIn()): ?>
+    <form id="productcomment" action="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);?>index.php/productcomment/index/add" method="post" >
+        <h3><?php echo Mage::helper('productcomment')->__('Aggiungi un commento')?></h3>
+        <ul class="form-list">
+            <li>
+            <textarea style="height:150px;width:98%;" name="productcommentbox" class="required-entry" id="product_comments" cols="86" rows="4" <?php if($_GET['___SID']=='U?login=1')://if($_GET['login']==1):?>autofocus="autofocus"<?php endif;?>></textarea>
+            <input type="hidden" name = "productid" value="<?php echo $product_id ?>" />
+            </li>
+        </ul>
+        <div class="button-set" style="width:99%">
+            <button  type="submit" name="productcomment" class="button btn-reply">
+                <span><span>Commenta</span></span>
+            </button>
+        </div>
+    </form>
+<?php endif; ?>
+
+ <script type="text/javascript">
+//< ![CDATA[
+  var myForm= new VarienForm('productcomment', true);
+//]]>
+</script><br />

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+* @author Amasty Team
+* @copyright Copyright (c) 2014 Amasty (http://www.amasty.com)
+* @package Amasty_Amasty_Ordermanager
+*/
+-->
+<config>
+    <modules>
+        <Amasty_Ordermanager>
+            <version>3.2.0</version>
+        </Amasty_Ordermanager>
+    </modules>
+    <global>
+        <helpers>
+            <amordermanager>
+                <class>Amasty_Ordermanager_Helper</class>
+            </amordermanager>
+        </helpers>
+    </global>
+    <adminhtml>
+        <translate>
+            <modules>
+                <Amasty_Ordermanager>
+                    <files>
+                        <default>Amasty_Ordermanager.csv</default>
+                    </files>
+                </Amasty_Ordermanager>
+            </modules>
+        </translate>
+
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <amogrid translate="title" module="amordermanager">
+                                            <title>Order Manager: Extended Grid</title>
+                                            <sort_order>15130507</sort_order>
+                                        </amogrid>
+                                        <amoaction translate="title" module="amordermanager">
+                                            <title>Order Manager: Mass Actions</title>
+                                            <sort_order>15131301</sort_order>
+                                        </amoaction>
+                                        <amorderattach translate="title" module="amordermanager">
+                                            <title>Order Manager: Notes and Files</title>
+                                            <sort_order>15131406</sort_order>
+                                        </amorderattach>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>

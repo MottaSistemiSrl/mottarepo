@@ -1,0 +1,50 @@
+
+TIMING CATEGORY:db
+--------------------------------
+Phase:beforeImport
+- Class:Magmi_ProductImportEngine :0.0001 - Class:Magmi_CSVDataSource :0.0001 
+Phase:startImport
+- Class:Magmi_ProductImportEngine :0.0002 - Class:Magmi_CSVDataSource :0.0001 
+Phase:processColumnList
+- Class:Magmi_ConfigurableItemProcessor :0.0001 
+Phase:processItemBeforeId
+- Class:Magmi_ProductImportEngine :0.0015 - Class:CategoryImporter :0.001 - Class:DownloadableProcessor :0.0009 - Class:ImageAttributeItemProcessor :0.0009 - Class:Magmi_ConfigurableItemProcessor :0.0009 - Class:Magmi_DefaultAttributeItemProcessor :0.0008 
+Phase:processItemAfterId
+- Class:CategoryImporter :0.0039 - Class:Magmi_ConfigurableItemProcessor :0.0012 - Class:Magmi_DefaultAttributeItemProcessor :0.001 
+Phase:indb
+- Class:Magmi_ProductImportEngine :0.0505 - Class:CategoryImporter :0.0408 - Class:DownloadableProcessor :0.012 - Class:ImageAttributeItemProcessor :0.0404 
+Phase:processItemAfterImport
+- Class:Magmi_ProductImportEngine :0.0016 
+Phase:endImport
+
+Phase:afterImport
+
+TIMING CATEGORY:global
+--------------------------------
+Phase:beforeImport
+- Class:Magmi_ProductImportEngine :0.0001 - Class:Magmi_CSVDataSource :0.0001 
+Phase:startImport
+- Class:Magmi_ProductImportEngine :0.0002 - Class:Magmi_CSVDataSource :0.0001 
+Phase:processColumnList
+- Class:Magmi_ConfigurableItemProcessor :0.0001 
+Phase:processItemBeforeId
+- Class:Magmi_ProductImportEngine :0.0015 - Class:CategoryImporter :0.001 - Class:DownloadableProcessor :0.0009 - Class:ImageAttributeItemProcessor :0.0009 - Class:Magmi_ConfigurableItemProcessor :0.0009 - Class:Magmi_DefaultAttributeItemProcessor :0.0008 
+Phase:processItemAfterId
+- Class:CategoryImporter :0.0039 - Class:Magmi_ConfigurableItemProcessor :0.0012 - Class:Magmi_DefaultAttributeItemProcessor :0.001 
+Phase:processItemAfterImport
+- Class:Magmi_ProductImportEngine :0.0016 
+Phase:endImport
+
+Phase:afterImport
+
+TIMING CATEGORY:line
+--------------------------------
+Phase:processItemBeforeId
+
+Phase:processItemAfterId
+- Class:CategoryImporter :0.0002 
+Phase:processItemAfterImport
+
+Phase:endImport
+
+Phase:afterImport

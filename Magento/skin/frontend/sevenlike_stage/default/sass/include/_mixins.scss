@@ -1,0 +1,85 @@
+@mixin georgia($size: 13px, $style: italic, $line: 18px) {
+  font-size: $size;
+  font-style: $style;
+  font-family: $georgia;
+  line-height: $line;
+}
+
+@mixin arial($size: $font13, $weight: normal, $style: normal, $line: $font-middle) {
+  font-family: $arial;
+  font-size: $size;
+  font-weight: $weight;
+  font-style: $style;
+  line-height: $line;
+}
+
+@mixin hand($size: $font-xl, $weight: normal, $style: normal, $line: $font-xl) {
+  font-family: $hand;
+  font-size: $size;
+  font-weight: $weight;
+  font-style: $style;
+  line-height: $line;
+  color: $pink;
+  letter-spacing: 0.4px;
+}
+
+@mixin font-s($size: $font13, $color: $grigio, $transf: uppercase) {
+  font-size: $size;
+  font-family: $opensans-regular;
+  color: $color;
+  text-decoration: none;
+  text-transform: $transf;
+}
+
+@mixin text-shadow($x:0px,$y:2px,$blur:2px,$color:#000000) {
+  text-shadow: $x $y $blur $color;
+  filter: dropshadow(color=$color, offx=$x, offy=$y);
+}
+
+@mixin hrr {
+  background: url('../images/bg_hr.png') 0 0 repeat-x;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+
+@mixin radius($tl: 0px,$tr: 0px,$br: 0px,$bl: 0px) {
+  -webkit-border-top-left-radius: $tl;
+  -webkit-border-top-right-radius: $tr;
+  -webkit-border-bottom-right-radius: $br;
+  -webkit-border-bottom-left-radius: $bl;
+  -moz-border-radius-topleft: $tl;
+  -moz-border-radius-topright: $tr;
+  -moz-border-radius-bottomright: $br;
+  -moz-border-radius-bottomleft: $bl;
+  border-top-left-radius: $tl;
+  border-top-right-radius: $tr;
+  border-bottom-right-radius: $br;
+  border-bottom-left-radius: $bl;
+}
+
+@mixin shadow($inset,$x:0,$y:5px,$blur:10px,$color:#000) {
+  -webkit-box-shadow: $inset $x $y $blur $color;
+     -moz-box-shadow: $inset $x $y $blur $color;
+       -o-box-shadow: $inset $x $y $blur $color;
+          box-shadow: $inset $x $y $blur $color;
+}
+
+@mixin transition($val,$dur: 0.3s) {
+	-webkit-transition: $val $dur;
+			transition: $val $dur;
+}
+
+@mixin transform($val) {
+  -webkit-transform: $val;
+      -ms-transform: $val;
+          transform: $val;
+}
+
+
+@mixin blog-color($color) {
+  color: $color !important;
+  &:before {
+    background: $color !important;
+  }
+}

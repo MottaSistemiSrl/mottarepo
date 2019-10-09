@@ -1,0 +1,9 @@
+<div class="forum-root-wrapper">
+    <h2><?php echo $this->__('Argomenti del forum') ?></h2>
+    <?php $forums = Mage::getModel('megaforum/forum')->getCollection(); ?>
+    <div class="box-forum-root">
+        <?php foreach($forums as $forum): ?>
+            <p class="post-title"><?php echo $forum->getForumName(); ?></p>
+        <?php endforeach; ?>
+    </div>
+</div>

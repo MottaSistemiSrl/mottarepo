@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Bitbull_BancaSellaPro>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <IWD_Opc />
+            </depends>
+        </Bitbull_BancaSellaPro>
+    </modules>
+</config>

@@ -1,0 +1,263 @@
+<div id="co-billing-form">
+<h3><?php echo $this->__('Dati personali')?></h3>
+<ul class="form-list">
+<?php if ($this->customerHasAddresses()): ?>
+    <li class="wide">
+        <label for="billing-address-select" class="notice"><?php echo $this->__('Select a billing address from your address book or enter a new address.') ?></label>
+        <div class="input-box">
+            <?php echo $this->getAddressesHtmlSelect('billing') ?>
+        </div>
+    </li>
+<?php endif; ?>
+<li id="billing-new-address-form"<?php if ($this->customerHasAddresses()): ?> style="display:none;"<?php endif; ?>>
+    <fieldset>
+        <input type="hidden" name="billing[address_id]" value="<?php echo $this->getAddress()->getId() ?>" id="billing:address_id" />
+        <ul>
+            <li class="fields"><?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getAddress()->getFirstname() ? $this->getAddress() : $this->getQuote()->getCustomer())->setForceUseCustomerRequiredAttributes(!$this->isCustomerLoggedIn())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?></li>
+            <li class="fields">
+
+                <div class="field">
+
+                    <label for="billing:indirizzo_aziendale" ><?php echo $this->__('Tipo Utente'); ?></label>
+                    <div class="input-box">
+                        <?php
+                        $check1 = ($this->getAddress()->getIndirizzoAziendale())?'':'selected';
+                        $check2 = ($this->getAddress()->getIndirizzoAziendale())?'selected':'';
+                        ?>
+                        <select id="billing:indirizzo_aziendale" name="billing[indirizzo_aziendale]">
+
+                            <option value="0" <?php echo $check1 ?> ><?php echo $this->__('Privato')?></option>
+                            <option value="1" <?php echo $check2 ?> ><?php echo $this->__('Azienda')?></option>
+                        </select>
+                    </div>
+                </div>
+            
+
+
+            </li>
+            <li id='company_container' class="fields wide">
+                <label for="billing:company" class="required"><?php echo $this->__('Company') ?>*</label>
+                <div class="input-box">
+                    <input type="text" id="billing:company" name="billing[company]" value="<?php echo $this->escapeHtml($this->getAddress()->getCompany()) ?>" title="<?php echo $this->__('Company') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('company') ?>" />
+                </div>
+
+
+            </li>
+            <li class="fields wide">
+
+                <div id='partita_iva_container' class="field">
+
+                    <label for="billing:partita_iva" class="required"><?php echo $this->__('Partita Iva') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" id="billing:partita_iva" name="billing[partita_iva]" value="<?php echo $this->escapeHtml($this->getAddress()->getPartitaIva()) ?>" title="<?php echo $this->__('Partita Iva') ?>" class="input-text validate-partita_iva validate-partitaiva" />
+                    </div>
+                </div>
+                <div id="vat_id_container" class="wide">
+
+                    <label for="billing:vat_id" class="required"><?php echo $this->__('Codice Fiscale') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" class="validate-codicefiscale" id="billing:vat_id" name="billing[vat_id]" value="<?php echo $this->escapeHtml($this->getAddress()->getVatId()) ?>" title="<?php echo $this->__('Codice Fiscale') ?>" class="input-text validate-codice_fiscale validate-codicefiscale" />
+                    </div>
+                </div>
+            </li>
+
+
+
+
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+            <li class="wide">
+                <div class="field">
+                    <label for="billing:email" class="required"><?php echo $this->__('Email Address') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" name="billing[email]" id="billing:email" value="<?php echo $this->escapeHtml($this->getAddress()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="input-text validate-email required-entry" />
+                    </div>
+                </div>
+                <?php endif; ?>
+            </li>
+
+            <?php $_streetValidationClass = $this->helper('opc')->getAttributeValidationClass('street'); ?>
+            <li class="wide">
+                <div class="field">
+                    <label for="billing:street1" class="required"><?php echo $this->__('Address') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('Street Address') ?>" name="billing[street][]" id="billing:street1" value="<?php echo $this->escapeHtml($this->getAddress()->getStreet(1)) ?>" class="input-text <?php echo $_streetValidationClass ?>" />
+                    </div>
+                </div>
+            </li>
+            <?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+            <?php if ($this->helper('opc')->isVatAttributeVisible()) : ?>
+                <li class="wide">
+                    <label for="billing:vat_id"><?php echo $this->__('VAT Number') ?></label>
+                    <div class="input-box">
+                        <input type="text" id="billing:vat_id" name="billing[vat_id]" value="<?php echo $this->escapeHtml($this->getAddress()->getVatId()) ?>" title="<?php echo $this->__('VAT Number') ?>" class="validate-codicefiscale input-text <?php echo $this->helper('opc')->getAttributeValidationClass('vat_id') ?>" />
+                    </div>
+                </li>
+            <?php endif; ?>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:city" class="required"><?php echo $this->__('City') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('City') ?>" name="billing[city]" value="<?php echo $this->escapeHtml($this->getAddress()->getCity()) ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('city') ?>" id="billing:city" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:region_id" class="required"><?php echo $this->__('State/Province') ?>*</label>
+                    <div class="input-box">
+                        <select id="billing:region_id" name="billing[region_id]" title="<?php echo $this->__('State/Province') ?>" class="validate-select" style="display:none;">
+                            <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                        </select>
+                        <script type="text/javascript">
+                            //<![CDATA[
+                            $('billing:region_id').setAttribute('defaultValue',  "<?php echo $this->getAddress()->getRegionId() ?>");
+                            //]]>
+                        </script>
+                        <input type="text" id="billing:region" name="billing[region]" value="<?php echo $this->escapeHtml($this->getAddress()->getRegion()) ?>"  title="<?php echo $this->__('State/Province') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                    </div>
+                </div>
+            </li>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:postcode" class="required"><?php echo $this->__('Zip/Postal Code') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" title="<?php echo $this->__('Zip/Postal Code') ?>" name="billing[postcode]" id="billing:postcode" value="<?php echo $this->escapeHtml($this->getAddress()->getPostcode()) ?>" class="input-text validate-zip-international <?php echo $this->helper('opc')->getAttributeValidationClass('postcode') ?>" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:country_id" class="required"><?php echo $this->__('Country') ?>*</label>
+                    <div class="input-box">
+                        <?php echo $this->getCountryHtmlSelect('billing') ?>
+                    </div>
+                </div>
+            </li>
+            <li class="fields">
+                <div class="field">
+                    <label for="billing:telephone" class="required"><?php echo $this->__('Telephone') ?>*</label>
+                    <div class="input-box">
+                        <input type="text" name="billing[telephone]" value="<?php echo $this->escapeHtml($this->getAddress()->getTelephone()) ?>" title="<?php echo $this->__('Telephone') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('telephone') ?>" id="billing:telephone" />
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="billing:fax"><?php echo $this->__('Fax') ?></label>
+                    <div class="input-box">
+                        <input type="text" name="billing[fax]" value="<?php echo $this->escapeHtml($this->getAddress()->getFax()) ?>" title="<?php echo $this->__('Fax') ?>" class="input-text <?php echo $this->helper('opc')->getAttributeValidationClass('fax') ?>" id="billing:fax" />
+                    </div>
+                </div>
+            </li>
+			
+			<div class="field" style="width:100%" >
+                     <input type="hidden" id="billing:richiesta_fattura" name="billing[richiesta_fattura]" value="1" />
+                    <!--<label for="billing:richiesta_fattura" ><?php// echo $this->__('Richiesta Fattura'); ?></label>-->
+                    <div class="input-box" style="width:100%"><br>
+                        <?php
+                        $check1 = ($this->getAddress()->getRichiestaFattura())?'':'selected';
+                        $check2 = ($this->getAddress()->getRichiestaFattura())?'selected':'';
+                        ?>
+						<label>Se sei un’azienda e vuoi ricevere la fattura scegli qui </label>
+                        <input type="hidden" value="1" id="billing:richiesta_fattura" name="billing[richiesta_fattura]">
+                        <select id="billing:richiesta_fattura" name="billing[richiesta_fattura]">
+                            <option value="0" <?php echo $check1 ?> ><?php echo $this->__('No')?></option>
+                            <option value="1" <?php echo $check2 ?> ><?php echo $this->__('Yes')?></option>
+                        </select>
+                    </div>
+                </div><br><br>
+			
+            <?php if(!$this->isCustomerLoggedIn()): ?>
+
+                <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+                <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+                <?php if ($_dob->isEnabled() || $_gender->isEnabled()): ?>
+                    <li class="fields">
+                        <?php if ($_dob->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_dob->setDate($this->getQuote()->getCustomerDob())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($_gender->isEnabled()): ?>
+                            <div class="field">
+                                <?php echo $_gender->setGender($this->getQuote()->getCustomerGender())->setFieldIdFormat('billing:%s')->setFieldNameFormat('billing[%s]')->toHtml() ?>
+                            </div>
+                        <?php endif ?>
+                    </li>
+                <?php endif ?>
+            <?php endif; ?>
+            <?php if ($this->isCustomerLoggedIn() && $this->customerHasAddresses()):?>
+                <li class="control">
+                    <input type="checkbox" name="billing[save_in_address_book]" value="1" title="<?php echo $this->__('Save in address book') ?>" id="billing:save_in_address_book" onchange="if(window.shipping) shipping.setSameAsBilling(false);"<?php if ($this->getAddress()->getSaveInAddressBook()):?> checked="checked"<?php endif;?> class="checkbox" /><label for="billing:save_in_address_book"><?php echo $this->__('Save in address book') ?></label>
+                </li>
+            <?php else:?>
+                <li class="no-display"><input type="hidden" name="billing[save_in_address_book]" value="1" /></li>
+            <?php endif; ?>
+            <?php echo $this->getChildHtml('form.additional.info'); ?>
+        </ul>
+    </fieldset>
+</li>
+<?php /* Extensions placeholder */ ?>
+<?php echo $this->getChildHtml('checkout.onepage.billing.extra')?>
+<?php if(!$this->isCustomerLoggedIn()): ?>
+    <li class="control">
+        <input type="checkbox" name="billing[create_account]" id="billing:create_account" value="1" title="Crea un account con questi dati"  class="checkbox" checked="checked" />
+        <label for="billing:create_account">Crea un account con questi dati</label>
+    </li>
+    <script type="text/javascript">
+        jQuery(function () {
+            setInterval(function () {
+                jQuery("#billing:create_account").prop("checked", true);
+                jQuery("input[name='billing[create_account]']").prop("checked", true);
+                jQuery("#register-customer-password").removeClass("hidden");
+            }, 500);
+        })
+    </script>
+
+    <li class="fields hidden" id="register-customer-password">
+        <div class="field">
+            <label for="billing:customer_password" class="required"><?php echo $this->__('Password') ?>*</label>
+            <div class="input-box">
+                <!--                        Dan Nistor - fix for chrome autocomplete off-->
+                <input type="password" placeholder="password" style="display: none" name="fake" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" autocomplete="off"/>
+                <!--                        Dan Nistor - fix for chrome autocomplete off-->
+                <input type="password" placeholder="password" name="billing[customer_password]" id="billing:customer_password" title="<?php echo $this->__('Password') ?>" class="input-text validate-password" autocomplete="off"/>
+            </div>
+        </div>
+        <div class="field">
+            <label for="billing:confirm_password" class="required"><?php echo $this->__('Confirm Password') ?>*</label>
+            <div class="input-box">
+                <input type="password" placeholder="password" name="billing[confirm_password]" title="<?php echo $this->__('Confirm Password') ?>" id="billing:confirm_password" class="input-text validate-cpassword" autocomplete="off"/>
+            </div>
+        </div>
+    </li>
+<?php endif;?>
+
+<?php if ($this->canShip()): ?>
+    <li class="control">
+        <input type="checkbox" name="billing[use_for_shipping]" id="billing:use_for_shipping_yes" value="1"<?php if ($this->isUseBillingAddressForShipping()) {?> checked="checked"<?php }?> title="<?php echo  $this->__('Ship to this address') ?>" class="checkbox   " /><label for="billing:use_for_shipping_yes"><?php echo  $this->__('Ship to this address') ?></label>
+    </li>
+<?php endif; ?>
+</ul>
+<?php if (!$this->canShip()): ?>
+    <input type="hidden" name="billing[use_for_shipping]" value="1" />
+<?php endif; ?>
+
+</div>
+<script type="text/javascript">
+    //<![CDATA[
+    var billingRegionUpdater = new RegionUpdater('billing:country_id', 'billing:region', 'billing:region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'billing:postcode');
+
+    document.observe('dom:loaded',function(){
+        toggleIndirizzoAziendale(Number($('billing:indirizzo_aziendale').value),'billing:');
+        toggleCodiceFiscale(Number($('billing:richiesta_fattura').value),'billing:');
+        Event.observe('billing:indirizzo_aziendale','change',function(e){
+
+            toggleIndirizzoAziendale(Number(this.value),'billing:');
+        } );
+        Event.observe('billing:richiesta_fattura','change',function(e){
+
+            toggleCodiceFiscale(Number(this.value),'billing:');
+        } );
+
+    });
+
+    $j(document).ready(function(){
+        $j('input[name="billing[create_account]"]').click();
+    });
+    //]]>
+</script>

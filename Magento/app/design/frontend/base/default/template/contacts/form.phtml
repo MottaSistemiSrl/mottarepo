@@ -1,0 +1,96 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+
+<form action="<?php echo $this->getFormAction(); ?>" style="margin-bottom: 40px; display: block;" id="contactForm" method="post">
+    <div class="fieldset">
+        <ul class="form-list">
+            <li class="fields">
+                <div class="field" style="width: 50%; float: left;">
+                    <label for="name" class="required" style="width: 50%; float: none;" ><em>*</em><?php echo Mage::helper('contacts')->__('Name') ?></label>
+                    <div class="input-box" >
+                        <input name="name" id="name" style="width: 250px;" title="<?php echo Mage::helper('contacts')->__('Name') ?>" value="<?php echo $this->escapeHtml($this->helper('contacts')->getUserName()) ?>" class="input-text required-entry" type="text" />
+                    </div>
+				</div>
+				
+				<div class="field" >
+                   	<label for="surname" class="required"  style="width: 50%; float: none;"  ><em>*</em><?php echo Mage::helper('contacts')->__('Cognome') ?></label>
+                    <div class="input-box">
+                        <input name="surname" id="name" style="width: 250px;" title="<?php echo Mage::helper('contacts')->__('Cognome') ?>" value="<?php echo $this->escapeHtml($this->helper('contacts')->getUserName()) ?>" class="input-text required-entry" type="text" />
+                    </div>
+                </div>
+				
+				<div class="field" style="width: 50%; float: left;">
+                    <label for="telephone" class="required" style="width: 50%; float: none;"><em>*</em>Telefono</label>
+                    <div class="input-box">
+                        <input name="telephone" id="telephone" style="width: 250px;" title="<?php echo Mage::helper('contacts')->__('Telefono') ?>" value="" class="input-text" type="text" />
+                    </div>
+                </div> 
+				
+                <div class="field">
+                    <label for="email" class="required" style="width: 50%; float: none;"><em>*</em><?php echo Mage::helper('contacts')->__('Email') ?></label>
+                    <div class="input-box">
+                        <input name="email" id="email" style="width: 250px;" title="<?php echo Mage::helper('contacts')->__('Email') ?>" value="<?php echo $this->escapeHtml($this->helper('contacts')->getUserEmail()) ?>" class="input-text required-entry validate-email" type="text" />
+                    </div>
+                </div>
+            </li>
+            <li>
+                
+            </li>
+            <li class="wide">
+                <label for="comment" class="required" style="width: 100%; float: none;"><em>*</em><?php echo Mage::helper('contacts')->__('Messaggio') ?></label>
+                <div class="input-box" style="height: 70px;">
+                    <textarea name="comment" id="comment" style="width: 100%; float: none;" title="<?php echo Mage::helper('contacts')->__('Messaggio') ?>" class="required-entry input-text" cols="5" rows="3"></textarea>
+                </div>
+            </li>
+
+
+
+        </ul>
+    </div>
+
+	
+					<div class="field" style="width: 100%; float: left;">
+                    <label for="privacy" class="required" style="width: 50%; float: none; display:none;"><em>*</em><?php echo Mage::helper('contacts')->__('Privacy') ?></label>
+                    <div class="checkbox validate-one-required" style="font-size: 11px;">
+                        <input id="privacy" type="checkbox" name="privacy" class="checkbox required-entry" /> Ho letto <a href="http://stage.burdastyle.it/privacy.html" target="_blank">l'informativa sulla privacy</a> e acconsento al trattamento dei dati personali ai sensi dell'art. 13 D. lgs. 30 giugno 2003, n. 196</p>
+                    </div>
+					<script src='https://www.google.com/recaptcha/api.js'></script>				
+<div class="g-recaptcha" data-sitekey="6LfMLj0UAAAAAKnx6XIMoRGWJGzSHtqHPp4fGPsF"></div>
+                </div> 
+
+	    <div class="buttons-set">
+
+        <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+        <button type="submit" title="<?php echo Mage::helper('contacts')->__('Submit') ?>" class="button btn-blue" style="float:left; margin-left:0;"><span><span><?php echo Mage::helper('contacts')->__('Submit') ?></span></span></button>
+    </div>			
+</form>
+<script type="text/javascript">
+//<![CDATA[
+    var contactForm = new VarienForm('contactForm', true);
+//]]>
+</script>

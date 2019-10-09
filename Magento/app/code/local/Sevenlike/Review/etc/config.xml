@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sevenlike_Review>
+            <version>1.0.0</version>
+        </Sevenlike_Review>
+    </modules>
+    <frontend>
+        <routers>
+            <review>
+                <args>
+                    <modules>
+                        <Sevenlike_Review before="Mage_Review">Sevenlike_Review</Sevenlike_Review>
+                    </modules>
+                </args>
+            </review>
+        </routers>
+    </frontend>
+</config>

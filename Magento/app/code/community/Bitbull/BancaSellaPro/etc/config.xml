@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Bitbull_BancaSellaPro>
+            <version>1.3.6</version>
+        </Bitbull_BancaSellaPro>
+    </modules>
+    <global>
+        <blocks>
+            <bitbull_bancasellapro>
+                <class>Bitbull_BancaSellaPro_Block</class>
+            </bitbull_bancasellapro>
+        </blocks>
+        <helpers>
+            <bitbull_bancasellapro>
+                <class>Bitbull_BancaSellaPro_Helper</class>
+            </bitbull_bancasellapro>
+        </helpers>
+        <models>
+            <bitbull_bancasellapro>
+                <class>Bitbull_BancaSellaPro_Model</class>
+                <resourceModel>bitbull_bancasellapro_resource</resourceModel>
+            </bitbull_bancasellapro>
+
+            <bitbull_bancasellapro_resource>
+                <class>Bitbull_BancaSellaPro_Model_Resource</class>
+                <entities>
+                    <token>
+                        <table>bitbull_bancasellapro_token</table>
+                    </token>
+                </entities>
+            </bitbull_bancasellapro_resource>
+            <sales>
+                <rewrite>
+                    <recurring_profile>Bitbull_BancaSellaPro_Model_Sales_Recurring_Profile</recurring_profile>
+                </rewrite>
+            </sales>
+        </models>
+        <!--To show the order in pending payment state before bancasella send a s2s request-->
+        <sales>
+            <order>
+                <states>
+                    <pending_payment translate="label">
+                        <label>Pending Payment</label>
+                        <statuses>
+                            <pending_payment default="1"/>
+                        </statuses>
+                        <visible_on_front>1</visible_on_front>
+                    </pending_payment>
+                </states>
+            </order>
+        </sales>
+        <resources>
+            <bitbull_bancasellapro_setup>
+                <setup>
+                    <module>Bitbull_BancaSellaPro</module>
+                </setup>
+            </bitbull_bancasellapro_setup>
+        </resources>
+    </global>
+
+    <phpunit>
+        <suite>
+            <modules>
+                <Bitbull_BancaSellaPro />
+            </modules>
+        </suite>
+    </phpunit>
+
+    <frontend>
+        <routers>
+            <bitbull_bancasellapro>
+                <use>standard</use>
+                <args>
+                    <module>Bitbull_BancaSellaPro</module>
+                    <frontName>bancasellapro</frontName>
+                </args>
+            </bitbull_bancasellapro>
+            <opc>
+                <args>
+                    <modules>
+                        <bitbull_bancasellapro before="IWD_Opc">Bitbull_BancaSellaPro</bitbull_bancasellapro>
+                    </modules>
+                </args>
+            </opc>
+        </routers>
+        <layout>
+            <updates>
+                <bitbull_bancasellapro>
+                    <file>bitbull_bancasellapro.xml</file>
+                </bitbull_bancasellapro>
+            </updates>
+        </layout>
+        <events>
+            <bitbull_bancasellapro_gestpay_success_action>
+                <observers>
+                    <googleanalytics_order_success>
+                        <class>googleanalytics/observer</class>
+                        <method>setGoogleAnalyticsOnOrderSuccessPageView</method>
+                    </googleanalytics_order_success>
+                </observers>
+            </bitbull_bancasellapro_gestpay_success_action>
+            <iwd_opc_before_send_result_save_payment>
+                <observers>
+                    <bitbull_bancasellapro_add_result>
+                        <class>bitbull_bancasellapro/observer</class>
+                        <method>addDataToResultSavePaymentIWD</method>
+                    </bitbull_bancasellapro_add_result>
+                </observers>
+            </iwd_opc_before_send_result_save_payment>
+        </events>
+        <translate>
+            <modules>
+                <bitbull_bancasellapro>
+                    <files>
+                        <default>Bitbull_BancaSellaPro.csv</default>
+                    </files>
+                </bitbull_bancasellapro>
+            </modules>
+        </translate>
+    </frontend>
+    <crontab>
+        <jobs>
+            <bitbull_bancasellapro_recurring_profile_charge>
+                <schedule>
+                    <cron_expr>0 * * * *</cron_expr>
+                </schedule>
+                <run>
+                    <model>bitbull_bancasellapro/observer::chargeRecurringProfiles</model>
+                </run>
+            </bitbull_bancasellapro_recurring_profile_charge>
+        </jobs>
+    </crontab>
+    <default>
+        <payment>
+            <gestpaypro>
+                <active>0</active>
+                <model>bitbull_bancasellapro/gestpay</model>
+                <debug>0</debug>
+                <log>0</log>
+                <order_status_ko_user>canceled</order_status_ko_user>
+                <order_status_ko_gestpay>holded</order_status_ko_gestpay>
+                <order_status_ok_gestpay>processing</order_status_ok_gestpay>
+                <order_status_fraud_gestpay>1</order_status_fraud_gestpay>
+                <title>Banca Sella GestPay Pro</title>
+                <description>Sarai reinderizzato alla pagina di pagamento su Banca Sella</description>
+                <iframe>0</iframe>
+                <tokenization>0</tokenization>
+                <allowspecific>0</allowspecific>
+                <language>0</language>
+                <currency>242</currency>
+            </gestpaypro>
+        </payment>
+    </default>
+</config>

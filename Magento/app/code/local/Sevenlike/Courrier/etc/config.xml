@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sevenlike_Courrier>
+            <version>1.0.0</version>
+        </Sevenlike_Courrier>
+    </modules>
+    <global>
+        <models>
+            <sevenlike_courrier>
+                <class>Sevenlike_Courrier_Model</class>
+                <resourceModel>sevenlike_courrier_resource</resourceModel>
+            </sevenlike_courrier>
+            <sevenlike_courrier_resource>
+                <class>Sevenlike_Courrier_Model_Resource</class>
+            </sevenlike_courrier_resource>
+        </models>
+        <blocks>
+            <sevenlike_courrier>
+                <class>Sevenlike_Courrier_Block</class>
+            </sevenlike_courrier>
+        </blocks>
+        <helpers>
+            <sevenlike_courrier>
+                <class>Sevenlike_Courrier_Helper</class>
+            </sevenlike_courrier>
+        </helpers>
+    </global>
+    <default>
+
+        <carriers>
+            <courrier>
+                <active>0</active>
+                <sallowspecific>0</sallowspecific>
+                <condition_name>package_weight</condition_name>
+                <include_virtual_price>1</include_virtual_price>
+                <model>sevenlike_courrier/carrier_courrier</model>
+                <name>Corriere Espresso</name>
+                <title>Vettore</title>
+                <specificerrmsg>This shipping method is currently unavailable. If you would like to ship using this shipping
+                    method, please contact us.
+                </specificerrmsg>
+                <handling_type>F</handling_type>
+                <enable_postal_service>1</enable_postal_service>
+                <postal_service_fee>5</postal_service_fee>
+                <postal_service_max_weight>10</postal_service_max_weight>
+                <postal_service_name>Poste Italiane / Nexive</postal_service_name>
+            </courrier>
+        </carriers>
+    </default>
+</config>

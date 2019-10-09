@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<layout>
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="mediaserver" ifconfig="mediaserver/general/enable_my_videos_for_customers"><name>myvideos</name><path>videos/myvideos</path><label>I miei video</label></action>
+        </reference>
+    </customer_account>
+	
+    <mediaserver_myvideos_index translate="label">
+        <label>I miei video</label>
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="mediaserver/customer_products_list" name="mediaserver_customer_products_list" template="sevenlike/mediaserver/customer/products/list.phtml" />
+        </reference>
+        <reference name="root">
+            <action method="setHeaderTitle" translate="title" module="downloadable"><title>I miei video</title></action>
+        </reference>
+    </mediaserver_myvideos_index>
+</layout>

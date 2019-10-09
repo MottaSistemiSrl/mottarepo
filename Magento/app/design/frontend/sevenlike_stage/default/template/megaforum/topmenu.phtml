@@ -1,0 +1,27 @@
+<ul class="forums comm">
+    <li><h4>Forum</h4></li>
+    <?php foreach($this->getAllForums() as $forum): ?>
+        <li><a href="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forum->getForumId()));  ?>"><?php print $forum->getForumName(); ?></a></li>
+    <?php endforeach; ?>
+</ul>
+<?php /*foreach($this->getForumsOrderedByTopicsCount(2) as $forum): */?><!--
+    <ul class="comm">
+        <li><h4><?php /*print $forum->getForumName(); */?></h4></li>
+        <?php /*foreach($this->getTopicsWithMostPostsByForum($forum->getForumId()) as $topic): */?>
+            <li><a href="<?php /*echo Mage::getUrl('megaforum/index/index', array('topic_id' => $topic->getTopicId()));  */?>"><?php /*print $topic->getTopicName(); */?></a></li>
+        <?php /*endforeach; */?>
+    </ul>
+--><?php //endforeach; ?>
+<ul class="comm">
+    <li><h4>My Burda</h4></li>
+    <li><a href="<?php echo $this->getUrl('customer/account/login/') ?>">Accedi</a></li>
+    <li><a href="<?php echo $this->getUrl('customer/account/create/') ?>">Registrati</a></li>
+    <li><a href="<?php echo $this->getUrl('product/') ?>">Carica la tua creazione</a></li>
+    <li><a href="<?php echo $this->getUrl('creazioni-degli-utenti.html') ?>">Le creazioni degli utenti</a></li>
+</ul>
+<ul class="comm ultimi-post">
+    <li><h4>Ultimi post</h4></li>
+    <?php foreach($this->getLatestPosts(4) as $post): ?>
+        <li><a href="<?php echo Mage::getUrl('megaforum/index/post') . "id/" . $post->getTopicId();  ?>"><?php print strip_tags(substr($post->getPostText(), 0, 80) . '...'); ?></a></li>
+    <?php endforeach; ?>
+</ul>

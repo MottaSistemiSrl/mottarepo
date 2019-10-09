@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sevenlike_Pollproduct>
+            <version>0.1.0</version>
+        </Sevenlike_Pollproduct>
+    </modules>
+    <global>
+        <helpers>
+            <sevenlike_pollproduct>
+                <class>SevenLike_Pollproduct_Helper</class>
+            </sevenlike_pollproduct>
+        </helpers>
+        <models>
+            <sevenlike_pollproduct>
+                <class>Sevenlike_Pollproduct_Model</class>
+            </sevenlike_pollproduct>
+        </models>
+    </global>
+</config>

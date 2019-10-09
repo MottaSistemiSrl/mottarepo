@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sevenlike_Mediaserver>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Sevenlike_Mediaserver>
+    </modules>
+</config>

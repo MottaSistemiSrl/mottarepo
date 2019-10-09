@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <SevenLike_Cwsync>
+            <version>0.1.0</version>
+        </SevenLike_Cwsync>
+    </modules>
+
+    <frontend>
+        <events>
+            <newsletter_subscriber_save_after>
+                <observers>
+                    <newsletter>
+                        <type>singleton</type>
+                        <class>SevenLike_Cwsync_Model_Observer</class>
+                        <method>newsletterSubscriberChange</method>
+                    </newsletter>
+                </observers>
+            </newsletter_subscriber_save_after>
+            <customer_register_success>
+                <observers>
+                    <register>
+                        <type>singleton</type>
+                        <class>SevenLike_Cwsync_Model_Observer</class>
+                        <method>customerRegistered</method>
+                    </register>
+                </observers>
+            </customer_register_success>
+        </events>
+	    <routers>
+            <customer>
+                <args>
+                    <modules>
+                        <SevenLike_Cwsync before="Mage_Customer">SevenLike_Cwsync</SevenLike_Cwsync>
+                    </modules>
+                </args>
+            </customer>
+            <!--<newsletter>-->
+                <!--<args>-->
+                    <!--<modules>-->
+                        <!--<SevenLike_Cwsync before="Mage_Newsletter">SevenLike_Cwsync</SevenLike_Cwsync>-->
+                    <!--</modules>-->
+                <!--</args>-->
+            <!--</newsletter>-->
+        </routers>
+    </frontend>
+</config>

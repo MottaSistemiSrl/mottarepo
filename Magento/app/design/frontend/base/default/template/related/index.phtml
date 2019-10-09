@@ -1,0 +1,134 @@
+<?php
+if(Mage::getStoreConfig('ewall_related/general/enabled')):
+if(count($this->getItems()) > 0): ?>
+<div class="page-title title-buttons">
+	<h1>Related Products</h1>
+	<ul class="checkout-types">
+		<li>    
+		<button onclick="window.location='<?php echo Mage::getBaseUrl(); ?>checkout/cart/';" class="button btn-proceed-checkout btn-checkout" title="Proceed to Checkout" type="button">
+			<span>
+				<span><?php echo $this->__('Shopping Cart'); ?></span>
+			</span>
+		</button>
+		</li>
+	</ul>
+</div>
+
+<div class="accesories silver_box items item1" id="content" style="display: block;">
+<script>
+	function showDetail(startname,objid){
+		jQuery("#"+startname+objid).slideToggle("slow");
+		var ao = document.getElementById('access_open_'+objid);
+		var ac = document.getElementById('access_close_'+objid);
+		
+		ao.style.display = ao.style.display == 'inline' ? 'none' : 'inline';
+		ac.style.display = ac.style.display == 'inline' ? 'none' : 'inline';
+	}
+	jQuery(document).ready(function(){
+		showDetail("rw_",1);
+		jQuery(".fancybox").fancybox();
+	}); 
+		
+</script>              
+</script>
+<?php 
+$itmes_col = Mage::helper('related')->categorygrouping($this->getItems());
+$product_id = $this->getRequest()->getParam('product');
+$product = Mage::getModel('catalog/product')->load($product_id);
+?>	
+
+<div style="clear:both" id="access_text_box"><?php echo $this->__('Customers who bought %s product also bought:',$product->getName()); ?></div>
+<ul class="accesories_tabs">
+	<div id="access_hint"><?php echo $this->__('Click the '); ?><span style="color:black">[+]</span><?php echo $this->__(' icon to expand the selection.'); ?></div>
+	<?php $i=1;foreach($itmes_col as $key => $_items): ?>	
+	<?php 
+		$category = Mage::getModel('catalog/category')->load($key); 
+		$category_name = $category->getName(); 
+	?>
+	<li>
+		<div>
+			<?php if($i==1): ?>
+			<div onclick="showDetail('rw_','<?php echo $i ?>');">
+				<span id="access_oc_tag">
+					<span style="display: none;" id="access_open_<?php echo $i ?>">[-]</span>
+					<span style="display: inline;" id="access_close_<?php echo $i ?>">[+]</span>
+				</span>
+			<?php else: ?>
+			<div onclick="showDetail('ra_','<?php echo $key ?>');">
+				<span id="access_oc_tag">
+					<span style="display: none;" id="access_open_<?php echo $key ?>">[-]</span>
+					<span style="display: inline;" id="access_close_<?php echo $key ?>">[+]</span>
+				</span>
+			<?php endif; ?>
+				<span id="access_title"><?php echo $category_name ?></span>
+			</div>
+		</div>
+	</li>
+	
+	
+	<ul class="accessories border-radius-3">
+		<?php if($i==1): ?>
+		<div style="display:none" name="rw_<?php echo $i ?>" id="rw_<?php echo $i ?>">
+		<?php else: ?>
+		<div style="display:none" name="ra_<?php echo $_item->getId() ?>" id="ra_<?php echo $key ?>">
+		<?php endif; ?>
+			<table>
+				<colgroup>
+					<col width="20%">
+					<col width="1%">
+					<col>
+					<col width="20%">
+					<col width="15%">
+				
+				</colgroup>
+				<tbody>
+				<?php $count = count($_items); ?>
+				<?php foreach($_items as $key1 => $_item): ?>
+				<?php $_item = Mage::helper('related')->getDatas($_item); ?>
+					<tr id="ra_row2_<?php echo $_item->getId() ?>">
+						<?php if($key1 == 0):?>
+						<td style="vertical-align:top" rowspan="<?php echo $count; ?>">
+							<a class="fancybox" title="" href="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>" id="ra_fb_<?php echo $key; ?>" style="position: relative;">
+								<img alt="" src="<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(120) ?>" id="ra_img_<?php echo $key; ?>">
+							</a>
+						</td>
+						<?php endif; ?>
+						<td onmouseover="ra_onmouseover('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>','<?php echo $_item->getId() ?>','<?php echo $count; ?>')" onmouseout="ra_onmouseout('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>')">
+							<span style="display:none" class="related_loader" id="loader_<?php echo $_item->getId() ?>" name="lb_<?php echo $_item->getSku() ?>">
+								<img id="lb_<?php echo $_item->getSku() ?>" src="<?php echo $this->getSkinUrl('images/loading-small.gif')?>">
+							</span>
+							<input type="checkbox" <?php if(Mage::helper('related')->isInCart($_item)): ?> checked="checked" <?php endif; ?>  value="ra_item" onclick="ra_checkCart(this, '<?php echo $_item->getId()?>','1','<?php echo Mage::getBaseUrl();?>');" id="check_<?php echo $_item->getId() ?>" name="cb_11187-AA-NA">
+						</td>
+
+						<td onmouseover="ra_onmouseover('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>','<?php echo $_item->getId() ?>','<?php echo $count; ?>')" onmouseout="ra_onmouseout('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>')">
+							<a style="cursor:pointer;text-decoration:none;" id="ra_col2_<?php echo $_item->getSku() ?>" class="">
+								<p><?php echo $this->htmlEscape($_item->getName()) ?></p>
+							</a>
+						</td>
+
+						<td onmouseover="ra_onmouseover('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>','<?php echo $_item->getId() ?>','<?php echo $count; ?>')" onmouseout="ra_onmouseout('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>')">
+							<a style="cursor:pointer;text-decoration:none;">
+								<h4><ins id="ra_col2_<?php echo $_item->getSku() ?>" class=""><?php echo $this->getPriceHtml($_item, true) ?></ins></h4>
+							</a>
+						</td>
+
+						<td onmouseover="ra_onmouseover('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>','<?php echo $_item->getId() ?>','<?php echo $count; ?>')" onmouseout="ra_onmouseout('<?php echo $key; ?>','<?php echo $this->helper('catalog/image')->init($_item, 'thumbnail')->resize(350) ?>')">
+							<a target="_blank" href="<?php echo $_item->getProductUrl() ?>" class="more_info_btn23 border-radius-2" title="" >
+								<span class="border-radius-2 fixpng"><?php echo $this->__('More info'); ?></span>
+							</a>
+						</td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+	</ul>
+	
+	<?php $i++;endforeach ?>
+</ul>
+</div>
+<?php else: ?>
+<?php echo $this->__('There is no related products in this section.'); ?>
+<?php endif; ?>
+<?php endif; ?>
+

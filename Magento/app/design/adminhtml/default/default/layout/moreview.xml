@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <moreview_adminhtml_moreview_index>
+        <reference name="content">
+            <block type="moreview/adminhtml_moreview" name="moreview" />
+        </reference>
+    </moreview_adminhtml_moreview_index>
+</layout>

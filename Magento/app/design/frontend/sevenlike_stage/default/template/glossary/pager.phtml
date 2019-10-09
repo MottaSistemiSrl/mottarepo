@@ -1,0 +1,60 @@
+<?php
+/**
+ * @category	design
+ * @package		base_default
+ * @author      Felix Moche <felix@kreativkonzentrat.de>
+ * @copyright	2012-2013 Kreativkonzentrat GbR
+ */
+?><?php $params = array_keys($this->getRequest()->getParams());
+        $previousPage = $this->getCurrentPage() - 1;
+        $nextPage = $this->getCurrentPage() + 1;
+?>
+<?php if ($this->getLastPageNum() > 1): ?>
+    <div class="pages">
+        <strong><?php echo $this->__('Page:') ?></strong>
+        <ol>
+			<?php if (!$this->isFirstPage()): ?>
+	            <li>
+	                <a class="previous<?php if (!$this->getAnchorTextForPrevious()): ?> i-previous<?php endif; ?>" href="<?php echo $this->getPageUrl() . $params[0] . "?p=" . $previousPage ?>" title="<?php echo $this->__('Previous') ?>">
+						<?php if (!$this->getAnchorTextForPrevious()): ?>
+                            &laquo;
+						<?php else: ?>
+							<?php echo $this->getAnchorTextForPrevious() ?>
+						<?php endif; ?>
+	                </a>
+	            </li>
+			<?php endif; ?>
+			<?php if ($this->canShowFirst()): ?>
+	            <li><a class="first" href="<?php echo $this->getFirstPageUrl() ?>">1</a></li>
+			<?php endif; ?>
+			<?php if ($this->canShowPreviousJump()): ?>
+	            <li><a class="previous_jump" title="" href="<?php echo $this->getPreviousJumpUrl() ?>">...</a></li>
+			<?php endif; ?>
+			<?php foreach ($this->getFramePages() as $_page): ?>
+				<?php if ($this->isPageCurrent($_page)): ?>
+					<li class="current"><?php echo $_page ?></li>
+				<?php else: ?>
+
+                    <li><a href="<?php echo $this->getPageUrl() . $params[0] . "?p=" . $_page ?>"><?php echo $_page ?></a></li>
+				<?php endif; ?>
+			<?php endforeach; ?>
+			<?php if ($this->canShowNextJump()): ?>
+	            <li><a class="next_jump" title="" href="<?php echo $this->getNextJumpUrl() ?>">...</a></li>
+			<?php endif; ?>
+			<?php if ($this->canShowLast()): ?>
+				<li><a class="last" href="<?php echo $this->getLastPageUrl() ?>"><?php echo $this->getLastPageNum() ?></a></li>
+			<?php endif; ?>
+			<?php if (!$this->isLastPage()): ?>
+	            <li>
+	                <a class="next<?php if (!$this->getAnchorTextForNext()): ?> i-next<?php endif; ?>" href="<?php echo $this->getPageUrl() . $params[0] . "?p=" . $nextPage ?>" title="<?php echo $this->__('Next') ?>">
+						<?php if (!$this->getAnchorTextForNext()): ?>
+							&raquo;
+						<?php else: ?>
+							<?php echo $this->getAnchorTextForNext() ?>
+						<?php endif; ?>
+	                </a>
+	            </li>
+			<?php endif; ?>
+        </ol>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,107 @@
+<h1>Mega Forum</h1><br><br>
+
+<?php 
+$forum = Mage::getModel('megaforum/forum')->getCollection(); 
+$fcount = $forum->count();
+?>
+
+<div style="width:300px; height:49px;" >
+<table>
+		<tr>
+			<td class="list">
+				Go To : &nbsp;
+			</td>
+			<td>
+				<select class="selection" onchange="slectBox(this)" id='selectedForum'>  
+						  <option value="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => 0));  ?>">Index</option>			
+						  <?php foreach($forum as $forums){ ?>
+						  <option id="<?php echo $forums->getForumId(); ?>" value="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forums->getForumId()));  ?>"> 
+						  <?php echo $forums->getForumName(); ?> </option>					 
+						  <?php
+						  }
+						  ?>
+				</select>
+			</td>
+		</tr>
+</table><br>
+</div>
+
+<div>
+
+<form method="post" action="<?php echo Mage::getUrl('megaforum/index/search'); ?>">
+	<table>
+		<tbody><tr>
+			<td width="659">
+				<h3>My Watchlists</h3>
+				
+			</td>					
+			<td>
+				<input type="text" name="query" value="SEARCH" onblur="if(this.value == '') { this.value='SEARCH'}" onfocus="if (this.value == 'SEARCH') {this.value=''}">      
+				<button title="Search" type="submit" class="image-button"><span>Search Forum</span></button>
+			</td>
+				</tr>
+	</tbody></table>
+</form>
+
+<?php //echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php //$watchlist = $this->getCollection(); ?>
+<?php //echo $this->getToolbarHtml(); ?>
+
+	<table class="forum">
+	<thead>
+		<tr>
+			<th class="name">Forum Name</th>
+			<th>Topic Title</th>
+			<th>Manage</th>
+		</tr>
+	</thead>
+	
+<tbody>
+<?php $_iterator = 0; 
+$watchlist = Mage::getModel('megaforum/watchlist')->getCollection(); ?>
+<?php
+foreach($watchlist as $watchlists){
+ 
+ $topics = Mage::getModel('megaforum/topic')->load($watchlists->getTopicId()); 
+ $customerName = Mage::getModel('customer/customer')->load($topics->getCreatedBy());
+ $forums = Mage::getModel('megaforum/forum')->load($topics->getForumId()); 
+ $adminName = Mage::getModel('admin/user')->load($forums->getCreatedBy()); 
+
+?>
+
+		<tr class="<?php if( ++$_iterator == sizeof($fcount) ): ?><?php endif; ?>  <?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+				
+					<td border="0" style="padding:0;">
+					<table width="100%" cellspacing="0" cellpadding="0" border="0">
+					<tbody>
+						<tr class="form-border">
+								<td class="details"><img src="<?php echo $this->getSkinUrl('images/user.png') ?>" /></td>
+								<td><a href="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forums->getForumId())); ?>"><strong><?php echo $forums->getForumName(); ?></strong></a><br>Created By : <?php echo $adminName->getUsername(); ?></td>
+						</tr>
+					</tbody>
+					</table>			
+					</td>
+					
+					<td><a href="<?php echo Mage::getUrl('megaforum/index/post')."id/".$topics->getTopicId() ?>"><?php echo $topics->getTopicName(); ?></a><br>
+								Created By : <?php echo $customerName->getFirstname(); ?></td>	
+								
+					<td><a href="<?php echo Mage::getUrl('megaforum/index/watchlistdelete')."id/".$watchlists->getTopicId() ?>">Delete</a></td>
+					
+		</tr>
+	
+<?php
+}
+?>
+</tbody>
+</table><br><br>
+</div>
+
+
+<script language='javascript'>
+
+function slectBox(sel) {
+var value = sel.options[sel.selectedIndex].value; 
+self.location=value;
+}
+
+</script>

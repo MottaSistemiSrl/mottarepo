@@ -1,0 +1,30 @@
+
+
+<h1>Mega Forum</h1><br><br>
+<div class="mega-forum">
+<html>
+<body>
+
+<form id="forum-form" action="<?php echo Mage::getUrl('megaforum/index/userimage'); ?>" method="post" enctype="multipart/form-data">
+<table width="100%">
+<tr>
+<td><td></td><label>User Image :&nbsp;&nbsp;</label>
+<input class="required-entry" type="file" name="image" id="image" /></td>
+</tr>
+</table>
+<td><td></td><br/>			
+<div class="button-set">
+<input class="topic-btn upload-btn" type="submit" value="Upload"></input>
+</div>
+<!--<button type="submit" class="image-button">&nbsp;&nbsp;&nbsp;Upload&nbsp;&nbsp;&nbsp;</button>--></td>	
+</form>
+</div>
+
+</body>
+</html> 
+
+<script type="text/javascript">
+   //<![CDATA[
+    var dataForm = new VarienForm('forum-form', true);
+   //]]> 
+ </script>

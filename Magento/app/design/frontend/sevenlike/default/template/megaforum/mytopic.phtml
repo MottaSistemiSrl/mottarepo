@@ -1,0 +1,126 @@
+
+
+<div class="megaforum">
+    <h1><?php echo $this->__('Forum') ?></h1>
+    <h2><?php echo $this->__('Aggiungi una nuova discussione') ?></h2>
+    <h3>Scambia idee e consigli con i membri della Community</h3>
+    <?php
+    $id = $this->getRequest()->getParam("forum_id");
+    $forum = Mage::getModel('megaforum/forum')->load($id);
+    ?>
+
+    <form id="megaforum-form" enctype="multipart/form-data" method="post" action="<?php echo Mage::getUrl('megaforum/index/save') ?>">
+
+
+        <div>
+            <label for="title_field"><h2><?php echo $this->__('Titolo Forum') ?></h2></label>
+            <input id="forum_name" type="text" value="<?php echo $forum->getForumName(); ?>" readonly="readonly" name="forum_name" />
+            <input type="hidden" id="forum_id" type="text" value="<?php echo $forum->getForumId(); ?>" name="forum_id" />
+        </div>
+
+        <div>
+            <label for="title_field"><h2><?php echo $this->__('Nome Argomento/Discussione') ?><span class="required"> * </h2></label>
+            <input id="topic_name" class="input-text required-entry" type="text" value="" name="topic_name" />
+        </div>
+
+
+        <!--<div>
+        <label for="title_field"><strong>STATUS<strong></label><br>
+        <select id="status" style="width: 457px;" name="status"><option selected="" value="0">--- Select Status --- </option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option></select>
+        </div>-->
+
+        <div>
+            <label for="content_field"><h2><?php echo $this->__('Post') ?> <span class="required">*</span></h2></label>
+            <textarea id="message" class="required-entry" rows="10" cols="53" name="message"></textarea><br><br>
+        </div>
+        <div class="verification-code">
+            <label for="captcha" class="required-entry"><h2><?php echo $this->__('Codice di verifica') ?> <em>*</em></h2></label>
+
+            <img id="captcha" src="<?php echo Mage::getBaseUrl() . 'megaforum/index/captcha/'; ?>"/>
+
+            <a onclick="offerRefreshImage();return false;" href="javascript:void(0);">
+                <img class="refreshover" src="<?php echo $this->getSkinUrl('images/refresh.png') ?>"/>
+            </a>
+
+            <div class="input-box">
+                <input type="text" name="captcha" id="captcha2" title="Codice di verifica" class="input-text required-entry"/>
+            </div>
+
+            <!--<div class="button-set">
+                <input class="topic-btn" type="submit" value="Save topic"></input>
+            </div>-->
+        </div>
+
+        <button class="button btn-reply" type="submit" value="Salva topic">
+            <span><span><?php echo $this->__('Salva') ?></span></span>
+        </button>
+    </form>
+</div>
+
+<script type="text/javascript">
+    //<![CDATA[
+    var dataForm = new VarienForm('megaforum-form', true);
+    //]]>
+</script>
+
+<script type="text/javascript">
+
+    function offerRefreshImage() {
+        url = '<?php echo Mage::getUrl('megaforum/index/refreshcaptcha/') ?>';
+        capchaRefesh = new Ajax.Request(url, {
+            method: 'get',
+            onSuccess: function (transport) {
+                imageCapcha = new Image();
+                imageCapcha.src = transport.responseText;
+                $('captcha').src = imageCapcha.src;
+            }
+        });
+    }
+
+</script>
+
+<script type="text/javascript" src="/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+    tinyMCE.init({
+        // General options
+        mode: "textareas",
+        theme: "advanced",
+        relative_urls: false,
+        plugins: "autolink,lists,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
+
+        // Theme options
+        theme_advanced_buttons1: "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+        theme_advanced_buttons2: "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+        theme_advanced_buttons3: "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,emotions,iespell,media,advhr,|,print,|,ltr,rtl,|,fullscreen",
+        theme_advanced_buttons4: "insertlayer,moveforward,movebackward,absolute,|,styleprops,spellchecker,|,cite,abbr,acronym,del,ins,attribs,|,visualchars,nonbreaking,template,blockquote,pagebreak,|,insertfile,insertimage",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_toolbar_align: "left",
+        theme_advanced_statusbar_location: "bottom",
+        theme_advanced_resizing: true,
+
+        // Skin options
+        skin: "o2k7",
+        skin_variant: "silver",
+
+        // Example content CSS (should be your site CSS)
+        content_css: "css/example.css",
+
+        // Drop lists for link/image/media/template dialogs
+        template_external_list_url: "js/template_list.js",
+        external_link_list_url: "js/link_list.js",
+        external_image_list_url: "js/image_list.js",
+        media_external_list_url: "js/media_list.js",
+
+        // Replace values for the template plugin
+        template_replace_values: {
+            username: "Some User",
+            staffid: "991234"
+        }
+    });
+</script>
+
+ 
+ 
+ 

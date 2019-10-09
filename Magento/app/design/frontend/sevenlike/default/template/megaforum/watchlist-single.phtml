@@ -1,0 +1,95 @@
+<?php
+$currentUser = Mage::getSingleton('customer/session');
+$customerData = $currentUser->getCustomer();
+$userId = Mage::getModel("megaforum/forumuser")->getCollection()->addFieldToFilter("user_id", $customerData->getId())->getFirstItem();
+?>
+<div class="megaforum">
+    <h1><?php echo $this->__('Forum') ?></h1>
+
+    <h2><?php echo $this->__('I miei Preferiti dal Forum') ?></h2>
+
+    <h3><?php echo $this->__('Scambia idee e consigli con i membri della Community') ?></h3>
+
+
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php //$watchlist = $this->getCollection(); ?>
+
+
+    <?php $watchlist = Mage::getModel('megaforum/watchlistsingle')->getCollection()->addFieldToFilter("watchlisted_by", $userId->getForumuserId()); ?>
+
+        <?php if($watchlist->getSize()) : ?>
+
+            <?php echo $this->getToolbarHtml(); ?>
+
+            <table class="forum">
+                <thead>
+                <tr>
+                    <th class="name"><?php echo $this->__('Forum') ?></th>
+                    <th><?php echo $this->__('Topic') ?></th>
+                    <th><?php echo $this->__('Modifica') ?></th>
+
+                </tr>
+                </thead>
+
+                <tbody>
+                <?php $_iterator = 0;
+
+                foreach ($watchlist as $watchlists) {
+
+                $topics = Mage::getModel('megaforum/topic')->load($watchlists->getTopicId());
+                $customerName = Mage::getModel('customer/customer')->load($topics->getCreatedBy());
+                $forums = Mage::getModel('megaforum/forum')->load($topics->getForumId());
+                //$adminName = Mage::getModel('admin/user')->load($forums->getCreatedBy());
+
+                ?>
+
+                <tr class="<?php echo ($_iterator % 2 == 0) ? 'even' : 'odd'; ?>">
+
+                    <td border="0" style="padding:0;">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                            <tbody>
+                            <tr class="form-border">
+                                <td>
+                                    <a href="<?php echo Mage::getUrl('megaforum/index/index', array('forum_id' => $forums->getForumId())); ?>">
+                                        <strong>
+                                            <?php echo $forums->getForumName(); ?>
+                                        </strong>
+                                    </a>
+    <!--                                <br>--><?php //echo $this->__('Creato da:') ?><!-- --><?php //echo $adminName->getUsername(); ?>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                    <td>
+                        <a href="<?php echo Mage::getUrl('megaforum/index/post') . "id/" . $topics->getTopicId() ?>"><?php echo $topics->getTopicName(); ?></a><br>
+                        <?php echo $this->__('Creato da:') ?> <?php echo $customerName->getFirstname(); ?></td>
+
+                    <td>
+                        <a href="<?php echo Mage::getUrl('megaforum/index/watchlistdelete') . "id/" . $watchlists->getTopicId() ?>"><?php echo $this->__('Elimina') ?></a>
+                    </td>
+
+                </tr>
+
+            <?php
+            }
+            ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <?php echo $this->__("You don't have any favorite topic"); ?>
+        <?php endif; ?>
+
+    <br><br>
+</div>
+
+
+<script language='javascript'>
+
+    function slectBox(sel) {
+        var value = sel.options[sel.selectedIndex].value;
+        self.location = value;
+    }
+
+</script>

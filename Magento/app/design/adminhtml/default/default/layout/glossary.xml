@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_glossary_index>
+        <reference name="content">
+            <block type="glossary/adminhtml_glossary" name="glossary" />
+        </reference>
+    </adminhtml_glossary_index>
+    <adminhtml_glossary_edit>
+        <update handle="editor" />
+    </adminhtml_glossary_edit>
+</layout>
