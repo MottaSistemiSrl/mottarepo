@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Sevenlike_Review>
-            <active>true</active>
-            <codePool>local</codePool>
-        </Sevenlike_Review>
-    </modules>
-</config>

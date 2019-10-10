@@ -1,6 +1,0 @@
-Require local
-AuthType basic
-AuthName "restricted"
-AuthDigestProvider file
-AuthUserFile /var/www/vhosts/burdastyle.it/httpdocs/.htpasswdmagmi
-Require valid-user

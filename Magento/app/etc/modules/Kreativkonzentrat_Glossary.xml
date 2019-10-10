@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Kreativkonzentrat_Glossary>
-            <active>true</active>
-            <codePool>community</codePool>
-        </Kreativkonzentrat_Glossary>
-    </modules>
-</config>

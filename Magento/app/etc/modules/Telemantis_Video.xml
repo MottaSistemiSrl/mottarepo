@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Telemantis_Video>
-            <active>true</active>
-            <codePool>community</codePool>
-        </Telemantis_Video>
-    </modules>
-</config>
